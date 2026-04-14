@@ -1,0 +1,46 @@
+namespace BudgetCouple.Infrastructure;
+
+using BudgetCouple.Application.Common.Interfaces;
+using BudgetCouple.Infrastructure.Persistence;
+using BudgetCouple.Infrastructure.Services;
+using BudgetCouple.Infrastructure.Services.Auth;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("Default") ??
+            throw new InvalidOperationException("Connection string 'Default' not found.");
+
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(connectionString));
+
+        services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<AppDbContext>());
+        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
+
+        // Register services
+        services.AddScoped<IPinHasher, PinHasher>();
+        services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+
+        // Register JWT token service
+        services.Configure<JwtTokenOptions>(options =>
+        {
+            var jwtConfig = configuration.GetSection("Jwt");
+            options.Issuer = jwtConfig["Issuer"] ?? "BudgetCouple";
+            options.Audience = jwtConfig["Audience"] ?? "BudgetCouple";
+            options.Secret = jwtConfig["Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
+            if (int.TryParse(jwtConfig["ExpiresMinutes"], out var expiresMinutes))
+            {
+                options.ExpiresMinutes = expiresMinutes;
+            }
+        });
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+        return services;
+    }
+}
