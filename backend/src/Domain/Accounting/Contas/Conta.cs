@@ -77,4 +77,10 @@ public class Conta : AggregateRoot
         Ativa = false;
         AtualizadoEm = DateTime.UtcNow;
     }
+
+    public void AtualizarSaldo(decimal valor)
+    {
+        SaldoInicial += valor;
+        AtualizadoEm = DateTime.UtcNow;
+    }
 }

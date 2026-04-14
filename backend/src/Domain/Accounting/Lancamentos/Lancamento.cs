@@ -29,6 +29,8 @@ public class Lancamento : AggregateRoot
     public Guid? RecorrenciaId { get; private set; }
     public List<string> Anexos { get; private set; } = new();
     public ClassificacaoRecorrencia Classificacao { get; private set; }
+    public bool FaturaPaga { get; private set; } = false;
+    public DateTime? FaturaPagaEm { get; private set; }
     public DateTime CriadoEm { get; private set; }
     public DateTime AtualizadoEm { get; private set; }
 
@@ -263,6 +265,16 @@ public class Lancamento : AggregateRoot
 
         RaiseDomainEvent(new LancamentoPago(Id, Valor, dataPagamento));
         return Result.Success();
+    }
+
+    /// <summary>
+    /// Marks credit card invoice as paid.
+    /// </summary>
+    public void MarcarFaturaPaga(DateTime dataPagamento)
+    {
+        FaturaPaga = true;
+        FaturaPagaEm = dataPagamento;
+        AtualizadoEm = DateTime.UtcNow;
     }
 
     /// <summary>

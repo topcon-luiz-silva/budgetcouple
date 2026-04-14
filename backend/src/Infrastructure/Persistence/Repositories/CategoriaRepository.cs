@@ -23,6 +23,11 @@ public class CategoriaRepository : ICategoriaRepository
         return await _dbContext.Categorias.ToListAsync(cancellationToken);
     }
 
+    public async Task<Categoria?> GetByNomeAsync(string nome, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Categorias.FirstOrDefaultAsync(c => c.Nome == nome, cancellationToken);
+    }
+
     public void Add(Categoria categoria)
     {
         _dbContext.Categorias.Add(categoria);

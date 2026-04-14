@@ -90,6 +90,14 @@ public class LancamentoConfiguration : IEntityTypeConfiguration<Lancamento>
             .HasConversion<string>()
             .IsRequired();
 
+        builder.Property(x => x.FaturaPaga)
+            .HasColumnName("fatura_paga")
+            .HasDefaultValue(false);
+
+        builder.Property(x => x.FaturaPagaEm)
+            .HasColumnName("fatura_paga_em")
+            .HasColumnType("timestamp with time zone");
+
         builder.Property(x => x.CriadoEm)
             .HasColumnName("criado_em")
             .HasColumnType("timestamp with time zone")
