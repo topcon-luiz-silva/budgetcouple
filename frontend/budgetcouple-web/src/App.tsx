@@ -16,6 +16,8 @@ import { LancamentosListPage } from '@/features/lancamentos/pages/LancamentosLis
 import { LancamentoSimplesFormPage } from '@/features/lancamentos/pages/LancamentoSimplesFormPage'
 import { LancamentoParceladoFormPage } from '@/features/lancamentos/pages/LancamentoParceladoFormPage'
 import { LancamentoRecorrenteFormPage } from '@/features/lancamentos/pages/LancamentoRecorrenteFormPage'
+import { FaturasListPage } from '@/features/faturas/pages/FaturasListPage'
+import { FaturaDetalhePage } from '@/features/faturas/pages/FaturaDetalhePage'
 import { Button } from '@/components/ui/button'
 
 function HomePage() {
@@ -98,6 +100,8 @@ export default function App() {
           <Route path="/cartoes" element={<CartoesListPage />} />
           <Route path="/cartoes/novo" element={<CartaoFormPage />} />
           <Route path="/cartoes/:id/editar" element={<CartaoFormPage />} />
+          <Route path="/cartoes/:cartaoId/faturas" element={<FaturasListPage />} />
+          <Route path="/cartoes/:cartaoId/faturas/:competencia" element={<FaturaDetalhePage />} />
           <Route path="/categorias" element={<CategoriasListPage />} />
           <Route path="/categorias/novo" element={<CategoriaFormPage />} />
           <Route path="/categorias/:id/editar" element={<CategoriaFormPage />} />

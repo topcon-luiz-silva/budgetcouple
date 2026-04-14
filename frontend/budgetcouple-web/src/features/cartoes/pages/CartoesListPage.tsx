@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Edit2, Trash2, Plus } from 'lucide-react'
+import { Edit2, Trash2, Plus, Receipt } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogBody } from '@/components/ui/dialog'
@@ -103,6 +103,11 @@ export function CartoesListPage() {
                   <TableCell>R$ {cartao.limite.toFixed(2)}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
+                      <Link to={`/cartoes/${cartao.id}/faturas`}>
+                        <Button variant="ghost" size="sm" className="text-purple-600 hover:text-purple-800">
+                          <Receipt className="h-4 w-4" />
+                        </Button>
+                      </Link>
                       <Link to={`/cartoes/${cartao.id}/editar`}>
                         <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
                           <Edit2 className="h-4 w-4" />
