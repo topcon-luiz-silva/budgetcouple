@@ -30,6 +30,8 @@ public static class DependencyInjection
         services.AddScoped<IContaRepository, ContaRepository>();
         services.AddScoped<ICartaoRepository, CartaoRepository>();
         services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+        services.AddScoped<ILancamentoRepository, LancamentoRepository>();
+        services.AddScoped<IRecorrenciaRepository, RecorrenciaRepository>();
 
         // Register services
         services.AddScoped<IPinHasher, PinHasher>();

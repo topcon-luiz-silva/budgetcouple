@@ -81,9 +81,27 @@ Commit: `feat(fase2-back): autenticação PIN com JWT - SetupPin/Login/ChangePin
 ### ✅ Fase 2 VALIDAÇÃO (2026-04-14)
 Validação end-to-end via agente. Gap CRITICAL encontrado e corrigido: `Error.Forbidden` não estava mapeado no `AuthController.MapErrorToStatusCode()`, retornando 500 em vez de 403 quando conta bloqueada. Corrigido no commit `fix(fase2): mapear Error.Forbidden para HTTP 403`. Gaps menores (hardcoded i18n strings em LoginPage, falta de .max(8) em ChangePinPage.pinAtual) registrados como débito técnico a limpar na Fase 11 (hardening).
 
+### ✅ Fase 3 BACKEND — CRUD Contas/Cartões/Categorias (2026-04-14)
+**Application (48 files):** Para cada aggregate (Conta, Cartao, Categoria): Commands Create/Update/Delete + Validators + Handlers, Queries GetById/List + Handlers, DTOs, Repository interfaces.
+
+**Infrastructure (3 files):** ContaRepository, CartaoRepository, CategoriaRepository + migration `AddContaPagamentoIdToCartao`.
+
+**API (3 controllers):** ContasController, CartoesController, CategoriasController — 15 endpoints totais, todos com `[Authorize]` e helper `ToActionResult` com mapeamento 400/403/404/409.
+
+**Tests:** 10 testes novos (Create handlers), todos passando. `dotnet build` 0/0. Commit `5c1315d` `feat(fase3-back): CRUD Contas/Cartões/Categorias`.
+
+### ✅ Fase 3 FRONTEND — CRUD UI (2026-04-14)
+**Components (5 novos shadcn/ui):** table, dialog, select, badge, + AppShell (sidebar com NavLinks, logout, `<Outlet/>`).
+
+**Features (5 files × 3 módulos = 15):** features/{contas,cartoes,categorias}/{api.ts, hooks.ts, types.ts, pages/ListPage.tsx, pages/FormPage.tsx}. Todos com RHF + Zod, React Query com queryKeys, toast de erro/sucesso.
+
+**App.tsx atualizado:** 9 novas rotas aninhadas sob AppShell. HomePage com links rápidos. i18n pt-BR ampliado (contas.*, cartoes.*, categorias.*, common.*).
+
+**Verificação:** `npm run build` → 0 errors, 523 kB bundle (159 kB gzip). Commit `ac0e05e` `feat(fase3-front): CRUD Contas/Cartões/Categorias + AppShell + navegação`.
+
 ## Próximas fases
-- ⏳ Fase 3 — CRUD Contas/Cartões/Categorias (próxima)
-- ⏳ Fases 4-12 pendentes
+- ⏳ Fase 4 — Lançamentos (núcleo: simples, parcelado, recorrente, pagar, realizar)
+- ⏳ Fases 5-12 pendentes
 
 ## Como retomar em sessão futura
 1. `cd "/home/luiz-felipe/Documentos/Claude/Projects/Aplicativo de Finanças/budgetcouple/"`
