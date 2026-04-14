@@ -31,6 +31,7 @@ public class Lancamento : AggregateRoot
     public ClassificacaoRecorrencia Classificacao { get; private set; }
     public bool FaturaPaga { get; private set; } = false;
     public DateTime? FaturaPagaEm { get; private set; }
+    public string? HashImportacao { get; private set; } // SHA256 hash for import deduplication
     public DateTime CriadoEm { get; private set; }
     public DateTime AtualizadoEm { get; private set; }
 

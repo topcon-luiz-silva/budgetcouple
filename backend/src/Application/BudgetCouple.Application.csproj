@@ -5,8 +5,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="BudgetCouple.Infrastructure" />
+    <InternalsVisibleTo Include="BudgetCouple.Api" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
   </ItemGroup>
 
   <PropertyGroup>

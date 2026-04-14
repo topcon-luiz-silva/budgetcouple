@@ -7,6 +7,8 @@ using BudgetCouple.Infrastructure.Persistence.Repositories;
 using BudgetCouple.Infrastructure.Services;
 using BudgetCouple.Infrastructure.Services.Auth;
 using BudgetCouple.Infrastructure.Services.Reports;
+using BudgetCouple.Infrastructure.Services.Import;
+using BudgetCouple.Application.Import.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,12 +35,18 @@ public static class DependencyInjection
         services.AddScoped<ICategoriaRepository, CategoriaRepository>();
         services.AddScoped<ILancamentoRepository, LancamentoRepository>();
         services.AddScoped<IRecorrenciaRepository, RecorrenciaRepository>();
+        services.AddScoped<IRegraClassificacaoRepository, RegraClassificacaoRepository>();
 
         // Register services
         services.AddScoped<IPinHasher, PinHasher>();
         services.AddScoped<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped<IExcelGenerator, ExcelGenerator>();
         services.AddScoped<IPdfGenerator, PdfGenerator>();
+
+        // Register import services
+        services.AddScoped<IOfxParser, OfxParser>();
+        services.AddScoped<ICsvParser, CsvParser>();
+        services.AddScoped<IClassificationEngine, ClassificationEngine>();
 
         // Register JWT token service
         services.Configure<JwtTokenOptions>(options =>
