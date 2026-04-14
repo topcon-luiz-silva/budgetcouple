@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card';
-import { Button } from '../../../components/ui/Button';
-import { Checkbox } from '../../../components/ui/Checkbox';
-import { Input } from '../../../components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Checkbox } from '../../../components/ui/checkbox';
+import { Input } from '../../../components/ui/input';
 import { useNotificacoes } from '../hooks/useNotificacoes';
-import { NotificationChannel, NotificationPreferences, NotificationHistory } from '../types';
+import type { NotificationPreferences } from '../types';
+import { NotificationChannel } from '../types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import './PreferenciasPage.css';
@@ -111,7 +112,7 @@ export const PreferenciasPage: React.FC = () => {
               <label>
                 <Checkbox
                   checked={formData.emailHabilitado}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePreferencesChange('emailHabilitado', e.target.checked)
                   }
                 />
@@ -126,7 +127,7 @@ export const PreferenciasPage: React.FC = () => {
                   id="email"
                   type="email"
                   value={formData.emailEndereco || ''}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePreferencesChange('emailEndereco', e.target.value)
                   }
                   placeholder="seu@email.com"
@@ -137,7 +138,7 @@ export const PreferenciasPage: React.FC = () => {
             <Button
               onClick={() => handleSendTest(NotificationChannel.Email)}
               disabled={!formData.emailHabilitado || testLoading === 'Email'}
-              variant="secondary"
+              variant="outline"
             >
               Enviar Teste
             </Button>
@@ -154,7 +155,7 @@ export const PreferenciasPage: React.FC = () => {
               <label>
                 <Checkbox
                   checked={formData.webPushHabilitado}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePreferencesChange('webPushHabilitado', e.target.checked)
                   }
                 />
@@ -166,7 +167,7 @@ export const PreferenciasPage: React.FC = () => {
               <Button
                 onClick={handleSubscribeWebPush}
                 disabled={testLoading === 'webpush'}
-                variant="primary"
+                variant="default"
               >
                 Ativar Notificacoes Web
               </Button>
@@ -176,7 +177,7 @@ export const PreferenciasPage: React.FC = () => {
               <Button
                 onClick={() => handleSendTest(NotificationChannel.WebPush)}
                 disabled={testLoading === 'WebPush'}
-                variant="secondary"
+                variant="outline"
               >
                 Enviar Teste
               </Button>
@@ -194,7 +195,7 @@ export const PreferenciasPage: React.FC = () => {
               <label>
                 <Checkbox
                   checked={formData.telegramHabilitado}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePreferencesChange('telegramHabilitado', e.target.checked)
                   }
                 />
@@ -210,7 +211,7 @@ export const PreferenciasPage: React.FC = () => {
                     id="chatId"
                     type="text"
                     value={formData.telegramChatId || ''}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handlePreferencesChange('telegramChatId', e.target.value)
                     }
                     placeholder="Seu Chat ID"
@@ -227,7 +228,7 @@ export const PreferenciasPage: React.FC = () => {
             <Button
               onClick={() => handleSendTest(NotificationChannel.Telegram)}
               disabled={!formData.telegramHabilitado || testLoading === 'Telegram'}
-              variant="secondary"
+              variant="outline"
             >
               Enviar Teste
             </Button>
@@ -244,7 +245,7 @@ export const PreferenciasPage: React.FC = () => {
               <label>
                 <Checkbox
                   checked={formData.notificarVencimentos1Dia}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePreferencesChange('notificarVencimentos1Dia', e.target.checked)
                   }
                 />
@@ -256,7 +257,7 @@ export const PreferenciasPage: React.FC = () => {
               <label>
                 <Checkbox
                   checked={formData.notificarVencimentosDia}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePreferencesChange('notificarVencimentosDia', e.target.checked)
                   }
                 />
@@ -268,7 +269,7 @@ export const PreferenciasPage: React.FC = () => {
               <label>
                 <Checkbox
                   checked={formData.notificarAlertasOrcamento}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePreferencesChange('notificarAlertasOrcamento', e.target.checked)
                   }
                 />
@@ -280,7 +281,7 @@ export const PreferenciasPage: React.FC = () => {
               <label>
                 <Checkbox
                   checked={formData.notificarFaturas}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePreferencesChange('notificarFaturas', e.target.checked)
                   }
                 />
@@ -296,7 +297,7 @@ export const PreferenciasPage: React.FC = () => {
         <Button
           onClick={handleSavePreferences}
           disabled={loading}
-          variant="primary"
+          variant="default"
         >
           {loading ? 'Salvando...' : 'Salvar Preferencias'}
         </Button>

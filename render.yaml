@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: budgetcouple-api
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Cors__AllowedOrigins__0
+        value: https://budgetcouple.vercel.app
+      - key: Cors__AllowedOrigins__1
+        value: https://localhost:3000
+      - key: SERILOG_LOGS_DIRECTORY
+        value: /tmp/logs

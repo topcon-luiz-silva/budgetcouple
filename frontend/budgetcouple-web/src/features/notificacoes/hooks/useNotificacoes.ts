@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { NotificationPreferences, NotificationHistory, NotificationChannel } from '../types';
+import type { NotificationPreferences, NotificationHistory } from '../types';
+import { NotificationChannel } from '../types';
 import { notificacoesApi } from '../api';
 
 export const useNotificacoes = () => {
@@ -89,7 +90,7 @@ export const useNotificacoes = () => {
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(
-          process.env.REACT_APP_VAPID_PUBLIC_KEY || ''
+          import.meta.env.VITE_VAPID_PUBLIC_KEY || ''
         ),
       });
 

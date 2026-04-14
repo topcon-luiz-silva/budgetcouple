@@ -1,4 +1,5 @@
-import { NotificationPreferences, NotificationHistory, NotificationChannel, WebPushSubscription } from './types';
+import type { NotificationPreferences, NotificationHistory, WebPushSubscription } from './types';
+import { NotificationChannel } from './types';
 import { apiClient } from '../../lib/apiClient';
 
 const BASE_URL = '/api/v1/notificacoes';

@@ -44,8 +44,8 @@ export function LancamentoAnexosSection({ lancamentoId }: LancamentoAnexosSectio
           fileInputRef.current.value = ''
         }
       },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.error || 'Erro ao enviar anexo')
+      onError: (_error: any) => {
+        toast.error(_error.response?.data?.error || 'Erro ao enviar anexo')
       },
     })
   }
@@ -80,7 +80,7 @@ export function LancamentoAnexosSection({ lancamentoId }: LancamentoAnexosSectio
         link.parentElement?.removeChild(link)
         window.URL.revokeObjectURL(url)
       },
-      onError: (error: any) => {
+      onError: (_error: any) => {
         toast.error('Erro ao fazer download')
       },
     })
@@ -93,7 +93,7 @@ export function LancamentoAnexosSection({ lancamentoId }: LancamentoAnexosSectio
       onSuccess: () => {
         toast.success('Anexo deletado com sucesso')
       },
-      onError: (error: any) => {
+      onError: (_error: any) => {
         toast.error('Erro ao deletar anexo')
       },
     })

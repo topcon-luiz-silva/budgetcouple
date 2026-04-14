@@ -93,18 +93,37 @@ npm run dev
 
 O plano de execução por fases está em [`docs/PRD-App-Despesas-Pessoais.md`](docs/PRD-App-Despesas-Pessoais.md) (Seção 16).
 
-Status: **Fase 0 — Setup** ✅
+Status: **Projeto 100% Completo** ✅
 
 - [x] Fase 0 — Setup
-- [ ] Fase 1 — Fundação Backend DDD
-- [ ] Fase 2 — Autenticação
-- [ ] Fase 3 — Contas, Cartões, Categorias
-- [ ] Fase 4 — Lançamentos
-- [ ] Fase 5 — Fatura de Cartão
-- [ ] Fase 6 — Dashboard e Relatórios
-- [ ] Fase 7 — Importação OFX/CSV
-- [ ] Fase 8 — Metas e Alertas
-- [ ] Fase 9 — Notificações
-- [ ] Fase 10 — Anexos, Backup, PWA, A11y
-- [ ] Fase 11 — Testes e Hardening
-- [ ] Fase 12 — Deploy
+- [x] Fase 1 — Fundação Backend DDD
+- [x] Fase 2 — Autenticação
+- [x] Fase 3 — Contas, Cartões, Categorias
+- [x] Fase 4 — Lançamentos
+- [x] Fase 5 — Fatura de Cartão
+- [x] Fase 6 — Dashboard e Relatórios
+- [x] Fase 7 — Importação OFX/CSV
+- [x] Fase 8 — Metas e Alertas
+- [x] Fase 9 — Notificações
+- [x] Fase 10 — Anexos, Backup, PWA, A11y
+- [x] Fase 11 — Testes e Hardening
+- [x] Fase 12 — Deploy
+
+## Deploy
+
+Para fazer deploy em produção, consulte o guia completo em [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+Stack de produção:
+- **Backend:** Render.com (Docker)
+- **Frontend:** Vercel
+- **Banco:** Supabase (PostgreSQL)
+- **Health Check:** UptimeRobot (anti cold-start)
+
+## CI/CD
+
+O repositório possui workflows GitHub Actions automatizados:
+
+- `.github/workflows/backend-ci.yml` — Testa build e testes do backend .NET
+- `.github/workflows/frontend-ci.yml` — Testa build, lint e testes do frontend React
+
+Ambos executam automaticamente em PRs e pushes para `main`/`develop`.

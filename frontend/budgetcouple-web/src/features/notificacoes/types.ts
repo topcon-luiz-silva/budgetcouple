@@ -1,20 +1,23 @@
-export enum NotificationChannel {
-  Email = 'Email',
-  WebPush = 'WebPush',
-  Telegram = 'Telegram'
-}
+export const NotificationChannel = {
+  Email: 'Email' as const,
+  WebPush: 'WebPush' as const,
+  Telegram: 'Telegram' as const,
+} as const;
+export type NotificationChannel = typeof NotificationChannel[keyof typeof NotificationChannel];
 
-export enum NotificationStatus {
-  Success = 'Success',
-  Failed = 'Failed',
-  Pending = 'Pending'
-}
+export const NotificationStatus = {
+  Success: 'Success' as const,
+  Failed: 'Failed' as const,
+  Pending: 'Pending' as const,
+} as const;
+export type NotificationStatus = typeof NotificationStatus[keyof typeof NotificationStatus];
 
-export enum NotificationType {
-  VencimentoProximo = 'VencimentoProximo',
-  AlertaOrcamento = 'AlertaOrcamento',
-  FaturaProxima = 'FaturaProxima'
-}
+export const NotificationType = {
+  VencimentoProximo: 'VencimentoProximo' as const,
+  AlertaOrcamento: 'AlertaOrcamento' as const,
+  FaturaProxima: 'FaturaProxima' as const,
+} as const;
+export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
 
 export interface NotificationPreferences {
   emailHabilitado: boolean;
