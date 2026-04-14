@@ -11,6 +11,13 @@ export function useCategoriasList() {
   })
 }
 
+export function useListCategorias() {
+  return useQuery({
+    queryKey: CATEGORIAS_QUERY_KEY,
+    queryFn: () => categoriasApi.list(),
+  })
+}
+
 export function useCategoriaById(id: string) {
   return useQuery({
     queryKey: [CATEGORIAS_QUERY_KEY, id],

@@ -21,6 +21,8 @@ import { FaturaDetalhePage } from '@/features/faturas/pages/FaturaDetalhePage'
 import { ImportacaoPage } from '@/features/importacao/pages/ImportacaoPage'
 import { RegrasListPage } from '@/features/regras/pages/RegrasListPage'
 import { RegrasFormPage } from '@/features/regras/pages/RegrasFormPage'
+import { MetasListPage } from '@/features/metas/pages/MetasListPage'
+import { MetaFormPage } from '@/features/metas/pages/MetaFormPage'
 
 function HealthPage() {
   return <div className="p-8">OK</div>
@@ -70,6 +72,9 @@ export default function App() {
           <Route path="/regras" element={<RegrasListPage />} />
           <Route path="/regras/novo" element={<RegrasFormPage />} />
           <Route path="/regras/:id/editar" element={<RegrasFormPage />} />
+          <Route path="/metas" element={<MetasListPage />} />
+          <Route path="/metas/novo" element={<MetaFormPage />} />
+          <Route path="/metas/:id/editar" element={<MetaFormPage />} />
           <Route path="/settings/pin" element={<ChangePinPage />} />
         </Route>
       </Routes>

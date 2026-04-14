@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { format, addMonths, subMonths } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { useListAlertas } from '@/features/metas/hooks'
+import { AlertasOrcamentoSection } from '@/features/metas/components/AlertasOrcamentoSection'
 import {
   ChevronLeft,
   ChevronRight,
@@ -37,6 +39,7 @@ export function DashboardPage() {
 
   const { data: dashboard, isPending, error } = useDashboard(mes)
   const { mutate: exportPdf, isPending: isExporting } = useExportDashboardPdf()
+  const { data: alertas = [] } = useListAlertas()
 
   const handlePreviousMonth = () => {
     setCurrentDate((prev) => subMonths(prev, 1))
@@ -214,6 +217,11 @@ export function DashboardPage() {
           <p className="text-xs text-slate-500">&nbsp;</p>
         </div>
       </div>
+
+      {/* Alertas de Orçamento */}
+      {alertas && alertas.length > 0 && (
+        <AlertasOrcamentoSection alertas={alertas} />
+      )}
 
       {/* Gráfico de Evolução Mensal */}
       <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
