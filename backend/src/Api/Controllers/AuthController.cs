@@ -82,6 +82,7 @@ public class AuthController : ControllerBase
             "NotFound" => StatusCodes.Status404NotFound,
             "Conflict" => StatusCodes.Status409Conflict,
             "Unauthorized" => StatusCodes.Status401Unauthorized,
+            "Forbidden" => StatusCodes.Status403Forbidden,
             "Validation" => StatusCodes.Status400BadRequest,
             _ => StatusCodes.Status500InternalServerError
         };
