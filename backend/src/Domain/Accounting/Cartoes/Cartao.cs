@@ -16,6 +16,7 @@ public class Cartao : AggregateRoot
     public decimal Limite { get; private set; }
     public string? Icone { get; private set; }
     public string Cor { get; private set; } = "#000000";
+    public Guid ContaPagamentoId { get; private set; } // Account used for payment
     public bool Ativa { get; private set; } = true;
     public DateTime CriadoEm { get; private set; }
     public DateTime AtualizadoEm { get; private set; }
@@ -29,6 +30,7 @@ public class Cartao : AggregateRoot
         int diaFechamento,
         int diaVencimento,
         decimal limite,
+        Guid contaPagamentoId,
         string? icone = null,
         string? cor = null)
     {
@@ -56,6 +58,7 @@ public class Cartao : AggregateRoot
             DiaFechamento = diaFechamento,
             DiaVencimento = diaVencimento,
             Limite = limite,
+            ContaPagamentoId = contaPagamentoId,
             Icone = icone,
             Cor = cor ?? "#000000",
             Ativa = true,
@@ -70,6 +73,7 @@ public class Cartao : AggregateRoot
         int diaFechamento,
         int diaVencimento,
         decimal limite,
+        Guid contaPagamentoId,
         string? icone = null,
         string? cor = null)
     {
@@ -94,6 +98,7 @@ public class Cartao : AggregateRoot
         DiaFechamento = diaFechamento;
         DiaVencimento = diaVencimento;
         Limite = limite;
+        ContaPagamentoId = contaPagamentoId;
         Icone = icone;
         if (cor != null)
             Cor = cor;

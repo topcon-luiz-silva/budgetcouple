@@ -38,6 +38,10 @@ public class CartaoConfiguration : IEntityTypeConfiguration<Cartao>
             .HasColumnName("limite")
             .HasColumnType("numeric(18,2)");
 
+        builder.Property(x => x.ContaPagamentoId)
+            .HasColumnName("conta_pagamento_id")
+            .IsRequired();
+
         builder.Property(x => x.Icone)
             .HasColumnName("icone")
             .HasColumnType("varchar(50)");

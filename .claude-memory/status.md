@@ -78,8 +78,12 @@ Commit: `feat(fase2-back): autenticação PIN com JWT - SetupPin/Login/ChangePin
 
 **Verificação:** `npm run build` → 0 errors, gzip 150.44 kB (main bundle), 9.57 kB CSS. Dev server localhost:5173 funciona. Commits: `feat(fase2-front): telas PIN setup/login/change + useAuthStore + RequireAuth + axios interceptor`.
 
+### ✅ Fase 2 VALIDAÇÃO (2026-04-14)
+Validação end-to-end via agente. Gap CRITICAL encontrado e corrigido: `Error.Forbidden` não estava mapeado no `AuthController.MapErrorToStatusCode()`, retornando 500 em vez de 403 quando conta bloqueada. Corrigido no commit `fix(fase2): mapear Error.Forbidden para HTTP 403`. Gaps menores (hardcoded i18n strings em LoginPage, falta de .max(8) em ChangePinPage.pinAtual) registrados como débito técnico a limpar na Fase 11 (hardening).
+
 ## Próximas fases
-- ⏳ Fases 3-12 pendentes (Dashboard, Contas, Cartões, Categorias, Lançamentos, etc.)
+- ⏳ Fase 3 — CRUD Contas/Cartões/Categorias (próxima)
+- ⏳ Fases 4-12 pendentes
 
 ## Como retomar em sessão futura
 1. `cd "/home/luiz-felipe/Documentos/Claude/Projects/Aplicativo de Finanças/budgetcouple/"`

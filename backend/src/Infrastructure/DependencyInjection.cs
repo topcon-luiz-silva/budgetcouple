@@ -1,6 +1,7 @@
 namespace BudgetCouple.Infrastructure;
 
 using BudgetCouple.Application.Common.Interfaces;
+using BudgetCouple.Application.Common.Interfaces.Accounting;
 using BudgetCouple.Infrastructure.Persistence;
 using BudgetCouple.Infrastructure.Persistence.Repositories;
 using BudgetCouple.Infrastructure.Services;
@@ -26,6 +27,9 @@ public static class DependencyInjection
 
         // Register repositories
         services.AddScoped<IAppConfigRepository, AppConfigRepository>();
+        services.AddScoped<IContaRepository, ContaRepository>();
+        services.AddScoped<ICartaoRepository, CartaoRepository>();
+        services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
         // Register services
         services.AddScoped<IPinHasher, PinHasher>();
