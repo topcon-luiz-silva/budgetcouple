@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Edit2, Trash2, Plus, DollarSign } from 'lucide-react'
+import { Edit2, Trash2, Plus, DollarSign, FileDown } from 'lucide-react'
 import { format, startOfMonth, endOfMonth } from 'date-fns'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -14,6 +14,7 @@ import {
   useDeleteLancamento,
   usePagarLancamento,
 } from '../hooks'
+import { useExportLancamentosExcel, useExportLancamentosPdf } from '@/features/dashboard/hooks'
 import { useContasList } from '@/features/contas/hooks'
 import { useCartoesList } from '@/features/cartoes/hooks'
 import { useCategoriasList } from '@/features/categorias/hooks'
@@ -71,6 +72,8 @@ export function LancamentosListPage() {
 
   const { mutate: deleteLancamento, isPending: isDeleting, error: deleteError } = useDeleteLancamento()
   const { mutate: pagarLancamento, isPending: isPagarPending, error: pagarError } = usePagarLancamento()
+  const { mutate: exportExcel, isPending: isExportingExcel } = useExportLancamentosExcel()
+  const { mutate: exportPdf, isPending: isExportingPdf } = useExportLancamentosPdf()
 
   const totalPages = Math.ceil(lancamentos.total / pageSize)
 
@@ -125,6 +128,52 @@ export function LancamentosListPage() {
     setCurrentPage(0)
   }
 
+  const handleExportExcel = () => {
+    exportExcel(
+      {
+        dataInicio: filters.dataInicio || undefined,
+        dataFim: filters.dataFim || undefined,
+        contaId: filters.contaId || undefined,
+        cartaoId: filters.cartaoId || undefined,
+        categoriaId: filters.categoriaId || undefined,
+        status: filters.status || undefined,
+      },
+      {
+        onSuccess: (blob) => {
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `lancamentos-${format(new Date(), 'yyyy-MM-dd')}.xlsx`
+          a.click()
+          URL.revokeObjectURL(url)
+        },
+      }
+    )
+  }
+
+  const handleExportPdf = () => {
+    exportPdf(
+      {
+        dataInicio: filters.dataInicio || undefined,
+        dataFim: filters.dataFim || undefined,
+        contaId: filters.contaId || undefined,
+        cartaoId: filters.cartaoId || undefined,
+        categoriaId: filters.categoriaId || undefined,
+        status: filters.status || undefined,
+      },
+      {
+        onSuccess: (blob) => {
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `lancamentos-${format(new Date(), 'yyyy-MM-dd')}.pdf`
+          a.click()
+          URL.revokeObjectURL(url)
+        },
+      }
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -133,7 +182,27 @@ export function LancamentosListPage() {
           <h1 className="text-3xl font-bold text-slate-900">{t('lancamentos.title')}</h1>
           <p className="text-slate-600 mt-1">Manage your transactions</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportExcel}
+            disabled={isExportingExcel}
+            className="gap-2"
+          >
+            <FileDown className="h-4 w-4" />
+            {t('dashboard.exportExcel')}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportPdf}
+            disabled={isExportingPdf}
+            className="gap-2"
+          >
+            <FileDown className="h-4 w-4" />
+            {t('dashboard.exportPdf')}
+          </Button>
           <Link to="/lancamentos/novo/simples">
             <Button variant="outline" size="sm">
               {t('lancamentos.simples')}

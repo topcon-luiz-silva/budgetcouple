@@ -4,10 +4,10 @@ import {
   Wallet,
   CreditCard,
   Tag,
-  Home,
   Settings,
   LogOut,
   ArrowRightLeft,
+  LayoutDashboard,
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { Button } from '@/components/ui/button'
@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { clear } = useAuthStore()
 
   const navItems: NavItem[] = [
-    { label: 'Início', icon: <Home className="h-5 w-5" />, href: '/' },
+    { label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, href: '/' },
     { label: 'Contas', icon: <Wallet className="h-5 w-5" />, href: '/contas' },
     { label: 'Cartões', icon: <CreditCard className="h-5 w-5" />, href: '/cartoes' },
     { label: 'Categorias', icon: <Tag className="h-5 w-5" />, href: '/categorias' },
