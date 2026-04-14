@@ -101,12 +101,28 @@ public class AppConfig : AggregateRoot
     }
 
     /// <summary>
+    /// Configures the initial PIN (only if not already configured).
+    /// </summary>
+    public Result ConfigurarPin(string hash, DateTime now)
+    {
+        if (!string.IsNullOrEmpty(PinHash))
+        {
+            return Result.Failure(Error.Conflict("PIN já configurado. Use trocar PIN."));
+        }
+
+        PinHash = hash;
+        PinSetAt = now;
+        ResetarFalhas();
+        return Result.Success();
+    }
+
+    /// <summary>
     /// Changes the PIN to a new hash.
     /// </summary>
-    public void TrocarPin(string novoHash)
+    public void TrocarPin(string novoHash, DateTime now)
     {
         PinHash = novoHash;
-        PinSetAt = DateTime.UtcNow;
+        PinSetAt = now;
         ResetarFalhas();
     }
 
@@ -132,4 +148,14 @@ public class AppConfig : AggregateRoot
     {
         TelegramChatIds.Remove(chatId);
     }
+
+    /// <summary>
+    /// Returns the number of remaining login attempts before lock-out.
+    /// </summary>
+    public int TentativasRestantes() => 5 - FailedAttempts;
+
+    /// <summary>
+    /// Checks if the account is currently locked.
+    /// </summary>
+    public bool EstaBloqueado(DateTime now) => LockedUntil.HasValue && LockedUntil > now;
 }

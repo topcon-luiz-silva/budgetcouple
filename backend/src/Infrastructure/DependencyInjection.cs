@@ -2,6 +2,7 @@ namespace BudgetCouple.Infrastructure;
 
 using BudgetCouple.Application.Common.Interfaces;
 using BudgetCouple.Infrastructure.Persistence;
+using BudgetCouple.Infrastructure.Persistence.Repositories;
 using BudgetCouple.Infrastructure.Services;
 using BudgetCouple.Infrastructure.Services.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,9 @@ public static class DependencyInjection
 
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<AppDbContext>());
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
+
+        // Register repositories
+        services.AddScoped<IAppConfigRepository, AppConfigRepository>();
 
         // Register services
         services.AddScoped<IPinHasher, PinHasher>();

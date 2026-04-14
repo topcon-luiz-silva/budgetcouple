@@ -1,20 +1,24 @@
 namespace BudgetCouple.Api.Controllers;
 
-using BudgetCouple.Application.Common.Interfaces;
-using BudgetCouple.Infrastructure.Persistence;
+using BudgetCouple.Application.Auth.Commands.ChangePin;
+using BudgetCouple.Application.Auth.Commands.Login;
+using BudgetCouple.Application.Auth.Commands.SetupPin;
+using BudgetCouple.Application.Auth.DTOs;
+using BudgetCouple.Application.Auth.Queries.GetAuthStatus;
+using BudgetCouple.Domain.Common;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/v1/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly AppDbContext _dbContext;
+    private readonly IMediator _mediator;
 
-    public AuthController(AppDbContext dbContext)
+    public AuthController(IMediator mediator)
     {
-        _dbContext = dbContext;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -22,41 +26,68 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpGet("status")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetStatus()
+    public async Task<ActionResult<AuthStatusDto>> GetStatus()
     {
-        var appConfig = await _dbContext.AppConfigs.FirstOrDefaultAsync();
-        var pinConfigured = appConfig != null && !string.IsNullOrEmpty(appConfig.PinHash);
-
-        return Ok(new { pinConfigured });
+        var query = new GetAuthStatusQuery();
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 
     /// <summary>
-    /// Setup PIN (not yet implemented).
+    /// Setup PIN (first-time configuration).
     /// </summary>
     [HttpPost("setup-pin")]
     [AllowAnonymous]
-    public IActionResult SetupPin()
+    public async Task<ActionResult<AuthResult>> SetupPin([FromBody] SetupPinRequest request)
     {
-        return StatusCode(StatusCodes.Status501NotImplemented, "Not implemented in Phase 1");
+        var command = new SetupPinCommand(request.Pin);
+        var result = await _mediator.Send(command);
+        return ToActionResult(result);
     }
 
     /// <summary>
-    /// Login with PIN (not yet implemented).
+    /// Login with PIN.
     /// </summary>
     [HttpPost("login")]
     [AllowAnonymous]
-    public IActionResult Login()
+    public async Task<ActionResult<AuthResult>> Login([FromBody] LoginRequest request)
     {
-        return StatusCode(StatusCodes.Status501NotImplemented, "Not implemented in Phase 1");
+        var command = new LoginCommand(request.Pin);
+        var result = await _mediator.Send(command);
+        return ToActionResult(result);
     }
 
     /// <summary>
-    /// Change PIN (not yet implemented).
+    /// Change PIN (requires authentication).
     /// </summary>
     [HttpPost("change-pin")]
     [Authorize]
-    public IActionResult ChangePin()
+    public async Task<IActionResult> ChangePin([FromBody] ChangePinRequest request)
     {
-        return StatusCode(StatusCodes.Status501NotImplemented, "Not implemented in Phase 1");
+        var command = new ChangePinCommand(request.PinAtual, request.NovoPin);
+        var result = await _mediator.Send(command);
+        return result.IsSuccess
+            ? Ok("PIN alterado com sucesso")
+            : StatusCode(MapErrorToStatusCode(result.Error), result.Error.Message);
     }
+
+    private ActionResult<T> ToActionResult<T>(Result<T> result) =>
+        result.IsSuccess
+            ? Ok(result.Value)
+            : StatusCode(MapErrorToStatusCode(result.Error), new { error = result.Error.Message });
+
+    private int MapErrorToStatusCode(Error error) =>
+        error.Code switch
+        {
+            "NotFound" => StatusCodes.Status404NotFound,
+            "Conflict" => StatusCodes.Status409Conflict,
+            "Unauthorized" => StatusCodes.Status401Unauthorized,
+            "Validation" => StatusCodes.Status400BadRequest,
+            _ => StatusCodes.Status500InternalServerError
+        };
 }
+
+// Request DTOs
+public record SetupPinRequest(string Pin);
+public record LoginRequest(string Pin);
+public record ChangePinRequest(string PinAtual, string NovoPin);

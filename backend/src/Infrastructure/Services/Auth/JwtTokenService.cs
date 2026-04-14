@@ -3,13 +3,9 @@ namespace BudgetCouple.Infrastructure.Services.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using BudgetCouple.Application.Common.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-
-public interface IJwtTokenService
-{
-    string GenerateToken();
-}
 
 public class JwtTokenOptions
 {

@@ -1,23 +1,18 @@
 namespace BudgetCouple.Infrastructure.Services.Auth;
 
+using BudgetCouple.Application.Common.Interfaces;
 using BCrypt.Net;
-
-public interface IPinHasher
-{
-    string HashPin(string pin);
-    bool VerifyPin(string pin, string hash);
-}
 
 public class PinHasher : IPinHasher
 {
     private const int WorkFactor = 12;
 
-    public string HashPin(string pin)
+    public string Hash(string pin)
     {
         return BCrypt.HashPassword(pin, WorkFactor);
     }
 
-    public bool VerifyPin(string pin, string hash)
+    public bool Verify(string pin, string hash)
     {
         try
         {
