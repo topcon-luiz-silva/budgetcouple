@@ -13,6 +13,8 @@ using BudgetCouple.Infrastructure.Services.Reports;
 using BudgetCouple.Infrastructure.Services.Import;
 using BudgetCouple.Infrastructure.Services.Notifications;
 using BudgetCouple.Application.Import.Interfaces;
+using BudgetCouple.Application.Common.Interfaces;
+using BudgetCouple.Infrastructure.FileStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<ICartaoRepository, CartaoRepository>();
         services.AddScoped<ICategoriaRepository, CategoriaRepository>();
         services.AddScoped<ILancamentoRepository, LancamentoRepository>();
+        services.AddScoped<ILancamentoAnexoRepository, LancamentoAnexoRepository>();
         services.AddScoped<IRecorrenciaRepository, RecorrenciaRepository>();
         services.AddScoped<IRegraClassificacaoRepository, RegraClassificacaoRepository>();
         services.AddScoped<IMetaRepository, MetaRepository>();
@@ -49,6 +52,8 @@ public static class DependencyInjection
         services.AddScoped<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped<IExcelGenerator, ExcelGenerator>();
         services.AddScoped<IPdfGenerator, PdfGenerator>();
+        services.AddScoped<IAttachmentStorage, LocalAttachmentStorage>();
+        services.AddScoped<IBackupService, BackupService>();
 
         // Register import services
         services.AddScoped<IOfxParser, OfxParser>();

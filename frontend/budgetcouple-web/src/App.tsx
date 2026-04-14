@@ -24,6 +24,7 @@ import { RegrasFormPage } from '@/features/regras/pages/RegrasFormPage'
 import { MetasListPage } from '@/features/metas/pages/MetasListPage'
 import { MetaFormPage } from '@/features/metas/pages/MetaFormPage'
 import { PreferenciasPage } from '@/features/notificacoes/pages/PreferenciasPage'
+import { ConfiguracoesPage } from '@/features/configuracoes/ConfiguracoesPage'
 
 function HealthPage() {
   return <div className="p-8">OK</div>
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="/metas/:id/editar" element={<MetaFormPage />} />
           <Route path="/settings/pin" element={<ChangePinPage />} />
           <Route path="/settings/notificacoes" element={<PreferenciasPage />} />
+          <Route path="/configuracoes/backup" element={<ConfiguracoesPage />} />
         </Route>
       </Routes>
     </AuthBootstrap>

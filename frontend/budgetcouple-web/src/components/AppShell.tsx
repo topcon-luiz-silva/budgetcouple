@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { Button } from '@/components/ui/button'
+import { PWAInstallPrompt } from '@/components/PWAInstallPrompt'
 
 interface NavItem {
   label: string
@@ -43,6 +44,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex bg-slate-50">
+      <PWAInstallPrompt />
+
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-white shadow-lg">
         <div className="p-6 flex items-center gap-2 border-b border-slate-800">

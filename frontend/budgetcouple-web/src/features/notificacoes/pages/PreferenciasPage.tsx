@@ -272,7 +272,7 @@ export const PreferenciasPage: React.FC = () => {
                     handlePreferencesChange('notificarAlertasOrcamento', e.target.checked)
                   }
                 />
-                Alertas de orcamento (>=80% gasto)
+                Alertas de orcamento (&gt;=80% gasto)
               </label>
             </div>
 

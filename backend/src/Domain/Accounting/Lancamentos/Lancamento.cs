@@ -28,6 +28,7 @@ public class Lancamento : AggregateRoot
     public bool IsRecorrente { get; private set; }
     public Guid? RecorrenciaId { get; private set; }
     public List<string> Anexos { get; private set; } = new();
+    public List<LancamentoAnexo> Anexos_EF { get; private set; } = new();
     public ClassificacaoRecorrencia Classificacao { get; private set; }
     public bool FaturaPaga { get; private set; } = false;
     public DateTime? FaturaPagaEm { get; private set; }

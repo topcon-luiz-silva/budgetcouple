@@ -24,6 +24,7 @@ public class AppDbContext : DbContext, IApplicationDbContext, IUnitOfWork
     public DbSet<Cartao> Cartoes { get; set; } = null!;
     public DbSet<Categoria> Categorias { get; set; } = null!;
     public DbSet<Lancamento> Lancamentos { get; set; } = null!;
+    public DbSet<LancamentoAnexo> LancamentoAnexos { get; set; } = null!;
     public DbSet<Recorrencia> Recorrencias { get; set; } = null!;
     public DbSet<Meta> Metas { get; set; } = null!;
     public DbSet<RegraClassificacao> RegrasClassificacao { get; set; } = null!;
