@@ -10,3 +10,18 @@ api.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Only redirect if not already on auth endpoints
+      if (!error.config.url?.includes('/auth/')) {
+        localStorage.removeItem('bc_token')
+        localStorage.removeItem('bc_expires')
+        window.location.href = '/login'
+      }
+    }
+    return Promise.reject(error)
+  }
+)
