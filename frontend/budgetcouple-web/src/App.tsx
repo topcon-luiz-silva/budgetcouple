@@ -1,4 +1,5 @@
 import { Routes, Route, Outlet } from 'react-router-dom'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { PinSetupPage } from '@/features/auth/pages/PinSetupPage'
 import { LoginPage } from '@/features/auth/pages/LoginPage'
 import { ChangePinPage } from '@/features/auth/pages/ChangePinPage'
@@ -40,48 +41,50 @@ function AuthenticatedLayout() {
 
 export default function App() {
   return (
-    <AuthBootstrap>
-      <Routes>
-        <Route path="/setup-pin" element={<PinSetupPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/health" element={<HealthPage />} />
+    <ErrorBoundary>
+      <AuthBootstrap>
+        <Routes>
+          <Route path="/setup-pin" element={<PinSetupPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/health" element={<HealthPage />} />
 
-        <Route
-          element={
-            <RequireAuth>
-              <AuthenticatedLayout />
-            </RequireAuth>
-          }
-        >
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/contas" element={<ContasListPage />} />
-          <Route path="/contas/novo" element={<ContaFormPage />} />
-          <Route path="/contas/:id/editar" element={<ContaFormPage />} />
-          <Route path="/cartoes" element={<CartoesListPage />} />
-          <Route path="/cartoes/novo" element={<CartaoFormPage />} />
-          <Route path="/cartoes/:id/editar" element={<CartaoFormPage />} />
-          <Route path="/cartoes/:cartaoId/faturas" element={<FaturasListPage />} />
-          <Route path="/cartoes/:cartaoId/faturas/:competencia" element={<FaturaDetalhePage />} />
-          <Route path="/categorias" element={<CategoriasListPage />} />
-          <Route path="/categorias/novo" element={<CategoriaFormPage />} />
-          <Route path="/categorias/:id/editar" element={<CategoriaFormPage />} />
-          <Route path="/lancamentos" element={<LancamentosListPage />} />
-          <Route path="/lancamentos/novo/simples" element={<LancamentoSimplesFormPage />} />
-          <Route path="/lancamentos/novo/parcelado" element={<LancamentoParceladoFormPage />} />
-          <Route path="/lancamentos/novo/recorrente" element={<LancamentoRecorrenteFormPage />} />
-          <Route path="/lancamentos/:id/editar" element={<LancamentoSimplesFormPage />} />
-          <Route path="/importacao" element={<ImportacaoPage />} />
-          <Route path="/regras" element={<RegrasListPage />} />
-          <Route path="/regras/novo" element={<RegrasFormPage />} />
-          <Route path="/regras/:id/editar" element={<RegrasFormPage />} />
-          <Route path="/metas" element={<MetasListPage />} />
-          <Route path="/metas/novo" element={<MetaFormPage />} />
-          <Route path="/metas/:id/editar" element={<MetaFormPage />} />
-          <Route path="/settings/pin" element={<ChangePinPage />} />
-          <Route path="/settings/notificacoes" element={<PreferenciasPage />} />
-          <Route path="/configuracoes/backup" element={<ConfiguracoesPage />} />
-        </Route>
-      </Routes>
-    </AuthBootstrap>
+          <Route
+            element={
+              <RequireAuth>
+                <AuthenticatedLayout />
+              </RequireAuth>
+            }
+          >
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/contas" element={<ContasListPage />} />
+            <Route path="/contas/novo" element={<ContaFormPage />} />
+            <Route path="/contas/:id/editar" element={<ContaFormPage />} />
+            <Route path="/cartoes" element={<CartoesListPage />} />
+            <Route path="/cartoes/novo" element={<CartaoFormPage />} />
+            <Route path="/cartoes/:id/editar" element={<CartaoFormPage />} />
+            <Route path="/cartoes/:cartaoId/faturas" element={<FaturasListPage />} />
+            <Route path="/cartoes/:cartaoId/faturas/:competencia" element={<FaturaDetalhePage />} />
+            <Route path="/categorias" element={<CategoriasListPage />} />
+            <Route path="/categorias/novo" element={<CategoriaFormPage />} />
+            <Route path="/categorias/:id/editar" element={<CategoriaFormPage />} />
+            <Route path="/lancamentos" element={<LancamentosListPage />} />
+            <Route path="/lancamentos/novo/simples" element={<LancamentoSimplesFormPage />} />
+            <Route path="/lancamentos/novo/parcelado" element={<LancamentoParceladoFormPage />} />
+            <Route path="/lancamentos/novo/recorrente" element={<LancamentoRecorrenteFormPage />} />
+            <Route path="/lancamentos/:id/editar" element={<LancamentoSimplesFormPage />} />
+            <Route path="/importacao" element={<ImportacaoPage />} />
+            <Route path="/regras" element={<RegrasListPage />} />
+            <Route path="/regras/novo" element={<RegrasFormPage />} />
+            <Route path="/regras/:id/editar" element={<RegrasFormPage />} />
+            <Route path="/metas" element={<MetasListPage />} />
+            <Route path="/metas/novo" element={<MetaFormPage />} />
+            <Route path="/metas/:id/editar" element={<MetaFormPage />} />
+            <Route path="/settings/pin" element={<ChangePinPage />} />
+            <Route path="/settings/notificacoes" element={<PreferenciasPage />} />
+            <Route path="/configuracoes/backup" element={<ConfiguracoesPage />} />
+          </Route>
+        </Routes>
+      </AuthBootstrap>
+    </ErrorBoundary>
   )
 }

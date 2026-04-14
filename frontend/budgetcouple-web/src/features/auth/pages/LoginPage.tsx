@@ -45,12 +45,12 @@ export function LoginPage() {
         const minutes = Math.ceil(
           (new Date(lockedUntil).getTime() - Date.now()) / 60000
         )
-        errorMessage = `Acesso bloqueado. Tente novamente em ${minutes} minuto(s).`
+        errorMessage = t('auth.error.lockedWithTime', { minutes })
       } else {
-        errorMessage = 'PIN incorreto. Acesso bloqueado.'
+        errorMessage = t('auth.error.lockedNoTime')
       }
     } else if (error.response?.status === 401) {
-      errorMessage = 'PIN incorreto'
+      errorMessage = t('auth.error.invalidPin')
     } else {
       errorMessage = error.message
     }
@@ -71,7 +71,7 @@ export function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {errorMessage && (
               <Alert variant="destructive">
-                <AlertTitle>Erro</AlertTitle>
+                <AlertTitle>{t('common.error')}</AlertTitle>
                 <AlertDescription>{errorMessage}</AlertDescription>
               </Alert>
             )}
@@ -94,7 +94,7 @@ export function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? 'Entrando...' : t('auth.submit.login')}
+              {isPending ? t('common.loading') : t('auth.submit.login')}
             </Button>
           </form>
         </CardContent>

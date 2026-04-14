@@ -16,6 +16,7 @@ const changePinSchema = z
     pinAtual: z
       .string()
       .min(6, 'PIN atual deve ter no mínimo 6 dígitos')
+      .max(8, 'PIN atual deve ter no máximo 8 dígitos')
       .regex(/^\d+$/, 'PIN deve conter apenas dígitos'),
     novoPin: z
       .string()
@@ -61,7 +62,7 @@ export function ChangePinPage() {
           className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-6"
         >
           <ArrowLeft className="h-5 w-5" />
-          <span>Voltar</span>
+          <span>{t('common.back')}</span>
         </button>
 
         <Card>
@@ -72,7 +73,7 @@ export function ChangePinPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {serverError && (
                 <Alert variant="destructive">
-                  <AlertTitle>Erro</AlertTitle>
+                  <AlertTitle>{t('common.error')}</AlertTitle>
                   <AlertDescription>{serverError}</AlertDescription>
                 </Alert>
               )}
@@ -135,10 +136,10 @@ export function ChangePinPage() {
                   className="flex-1"
                   onClick={() => navigate('/settings')}
                 >
-                  Cancelar
+                  {t('common.cancel')}
                 </Button>
                 <Button type="submit" className="flex-1" disabled={isPending}>
-                  {isPending ? 'Alterando...' : t('auth.submit.change')}
+                  {isPending ? t('common.loading') : t('auth.submit.change')}
                 </Button>
               </div>
             </form>
