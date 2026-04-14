@@ -1,8 +1,11 @@
 namespace BudgetCouple.Application.UnitTests.Dashboard.Queries;
 
+using BudgetCouple.Application.Budgeting.Metas.Queries;
 using BudgetCouple.Application.Common.Interfaces.Accounting;
+using BudgetCouple.Application.Common.Interfaces.Budgeting;
 using BudgetCouple.Application.Dashboard.Queries.GetDashboard;
 using BudgetCouple.Domain.Accounting;
+using MediatR;
 using BudgetCouple.Domain.Accounting.Cartoes;
 using BudgetCouple.Domain.Accounting.Categorias;
 using BudgetCouple.Domain.Accounting.Contas;
@@ -16,6 +19,8 @@ public class GetDashboardQueryHandlerTests
     private readonly Mock<ICategoriaRepository> _mockCategoriaRepository;
     private readonly Mock<IContaRepository> _mockContaRepository;
     private readonly Mock<ICartaoRepository> _mockCartaoRepository;
+    private readonly Mock<IMetaRepository> _mockMetaRepository;
+    private readonly Mock<IMediator> _mockMediator;
     private readonly Mock<ILogger<GetDashboardQueryHandler>> _mockLogger;
     private readonly GetDashboardQueryHandler _handler;
 
@@ -25,6 +30,8 @@ public class GetDashboardQueryHandlerTests
         _mockCategoriaRepository = new Mock<ICategoriaRepository>();
         _mockContaRepository = new Mock<IContaRepository>();
         _mockCartaoRepository = new Mock<ICartaoRepository>();
+        _mockMetaRepository = new Mock<IMetaRepository>();
+        _mockMediator = new Mock<IMediator>();
         _mockLogger = new Mock<ILogger<GetDashboardQueryHandler>>();
 
         _handler = new GetDashboardQueryHandler(
@@ -32,6 +39,8 @@ public class GetDashboardQueryHandlerTests
             _mockCategoriaRepository.Object,
             _mockContaRepository.Object,
             _mockCartaoRepository.Object,
+            _mockMetaRepository.Object,
+            _mockMediator.Object,
             _mockLogger.Object);
     }
 
@@ -67,6 +76,10 @@ public class GetDashboardQueryHandlerTests
         _mockCartaoRepository
             .Setup(x => x.ListAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Cartao>());
+
+        _mockMediator
+            .Setup(x => x.Send(It.IsAny<ListarAlertasOrcamentoQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Domain.Common.Result.Success(new List<BudgetCouple.Application.Budgeting.Metas.DTOs.AlertaOrcamentoDashboardDto>()));
 
         var query = new GetDashboardQuery(mes);
 

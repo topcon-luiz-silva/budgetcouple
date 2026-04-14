@@ -2,8 +2,10 @@ namespace BudgetCouple.Infrastructure;
 
 using BudgetCouple.Application.Common.Interfaces;
 using BudgetCouple.Application.Common.Interfaces.Accounting;
+using BudgetCouple.Application.Common.Interfaces.Budgeting;
 using BudgetCouple.Infrastructure.Persistence;
 using BudgetCouple.Infrastructure.Persistence.Repositories;
+using BudgetCouple.Infrastructure.Repositories;
 using BudgetCouple.Infrastructure.Services;
 using BudgetCouple.Infrastructure.Services.Auth;
 using BudgetCouple.Infrastructure.Services.Reports;
@@ -36,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<ILancamentoRepository, LancamentoRepository>();
         services.AddScoped<IRecorrenciaRepository, RecorrenciaRepository>();
         services.AddScoped<IRegraClassificacaoRepository, RegraClassificacaoRepository>();
+        services.AddScoped<IMetaRepository, MetaRepository>();
 
         // Register services
         services.AddScoped<IPinHasher, PinHasher>();

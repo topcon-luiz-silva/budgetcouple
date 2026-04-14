@@ -1,8 +1,11 @@
 namespace BudgetCouple.Application.Dashboard.Queries.GetDashboard;
 
+using BudgetCouple.Application.Budgeting.Metas.Queries;
 using BudgetCouple.Application.Common.Interfaces.Accounting;
+using BudgetCouple.Application.Common.Interfaces.Budgeting;
 using BudgetCouple.Application.Dashboard.DTOs;
 using BudgetCouple.Domain.Accounting;
+using BudgetCouple.Domain.Budgeting.Metas;
 using BudgetCouple.Domain.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -14,6 +17,8 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
     private readonly ICategoriaRepository _categoriaRepository;
     private readonly IContaRepository _contaRepository;
     private readonly ICartaoRepository _cartaoRepository;
+    private readonly IMetaRepository _metaRepository;
+    private readonly IMediator _mediator;
     private readonly ILogger<GetDashboardQueryHandler> _logger;
 
     public GetDashboardQueryHandler(
@@ -21,12 +26,16 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
         ICategoriaRepository categoriaRepository,
         IContaRepository contaRepository,
         ICartaoRepository cartaoRepository,
+        IMetaRepository metaRepository,
+        IMediator mediator,
         ILogger<GetDashboardQueryHandler> logger)
     {
         _lancamentoRepository = lancamentoRepository;
         _categoriaRepository = categoriaRepository;
         _contaRepository = contaRepository;
         _cartaoRepository = cartaoRepository;
+        _metaRepository = metaRepository;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -203,6 +212,14 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             .OrderBy(v => v.DataVencimento)
             .ToList();
 
+        // Get budget alerts for current month
+        var alertasResult = await _mediator.Send(new ListarAlertasOrcamentoQuery(), cancellationToken);
+        var alertasOrcamento = alertasResult.IsSuccess
+            ? alertasResult.Value
+                .Select(a => new AlertaOrcamentoDto(a.CategoriaNome ?? "Desconhecida", a.ValorAtual, a.ValorAlvo, a.PercentualUtilizado))
+                .ToList()
+            : new List<AlertaOrcamentoDto>();
+
         var dashboard = new DashboardDto(
             request.Mes,
             resumo,
@@ -210,7 +227,7 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             porConta,
             porCartao,
             evolucaoMensal,
-            new List<AlertaOrcamentoDto>(), // Vazio para Fase 8
+            alertasOrcamento,
             proximosVencimentos);
 
         sw.Stop();

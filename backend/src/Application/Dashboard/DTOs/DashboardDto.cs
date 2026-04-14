@@ -47,7 +47,6 @@ public record EvolucaoMesDto(
     decimal Saldo);
 
 public record AlertaOrcamentoDto(
-    Guid CategoriaId,
     string CategoriaNome,
     decimal ValorGasto,
     decimal Limite,
