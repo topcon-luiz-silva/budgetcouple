@@ -7,6 +7,7 @@ import {
   Home,
   Settings,
   LogOut,
+  ArrowRightLeft,
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { Button } from '@/components/ui/button'
@@ -27,6 +28,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     { label: 'Contas', icon: <Wallet className="h-5 w-5" />, href: '/contas' },
     { label: 'Cartões', icon: <CreditCard className="h-5 w-5" />, href: '/cartoes' },
     { label: 'Categorias', icon: <Tag className="h-5 w-5" />, href: '/categorias' },
+    { label: 'Lançamentos', icon: <ArrowRightLeft className="h-5 w-5" />, href: '/lancamentos' },
     { label: 'Configurações', icon: <Settings className="h-5 w-5" />, href: '/settings/pin' },
   ]
 

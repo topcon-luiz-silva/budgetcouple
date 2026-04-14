@@ -12,6 +12,10 @@ import { CartoesListPage } from '@/features/cartoes/pages/CartoesListPage'
 import { CartaoFormPage } from '@/features/cartoes/pages/CartaoFormPage'
 import { CategoriasListPage } from '@/features/categorias/pages/CategoriasListPage'
 import { CategoriaFormPage } from '@/features/categorias/pages/CategoriaFormPage'
+import { LancamentosListPage } from '@/features/lancamentos/pages/LancamentosListPage'
+import { LancamentoSimplesFormPage } from '@/features/lancamentos/pages/LancamentoSimplesFormPage'
+import { LancamentoParceladoFormPage } from '@/features/lancamentos/pages/LancamentoParceladoFormPage'
+import { LancamentoRecorrenteFormPage } from '@/features/lancamentos/pages/LancamentoRecorrenteFormPage'
 import { Button } from '@/components/ui/button'
 
 function HomePage() {
@@ -97,6 +101,11 @@ export default function App() {
           <Route path="/categorias" element={<CategoriasListPage />} />
           <Route path="/categorias/novo" element={<CategoriaFormPage />} />
           <Route path="/categorias/:id/editar" element={<CategoriaFormPage />} />
+          <Route path="/lancamentos" element={<LancamentosListPage />} />
+          <Route path="/lancamentos/novo/simples" element={<LancamentoSimplesFormPage />} />
+          <Route path="/lancamentos/novo/parcelado" element={<LancamentoParceladoFormPage />} />
+          <Route path="/lancamentos/novo/recorrente" element={<LancamentoRecorrenteFormPage />} />
+          <Route path="/lancamentos/:id/editar" element={<LancamentoSimplesFormPage />} />
           <Route path="/settings/pin" element={<ChangePinPage />} />
         </Route>
       </Routes>
