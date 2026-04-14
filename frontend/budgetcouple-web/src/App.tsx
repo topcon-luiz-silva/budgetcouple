@@ -18,6 +18,9 @@ import { LancamentoParceladoFormPage } from '@/features/lancamentos/pages/Lancam
 import { LancamentoRecorrenteFormPage } from '@/features/lancamentos/pages/LancamentoRecorrenteFormPage'
 import { FaturasListPage } from '@/features/faturas/pages/FaturasListPage'
 import { FaturaDetalhePage } from '@/features/faturas/pages/FaturaDetalhePage'
+import { ImportacaoPage } from '@/features/importacao/pages/ImportacaoPage'
+import { RegrasListPage } from '@/features/regras/pages/RegrasListPage'
+import { RegrasFormPage } from '@/features/regras/pages/RegrasFormPage'
 
 function HealthPage() {
   return <div className="p-8">OK</div>
@@ -63,6 +66,10 @@ export default function App() {
           <Route path="/lancamentos/novo/parcelado" element={<LancamentoParceladoFormPage />} />
           <Route path="/lancamentos/novo/recorrente" element={<LancamentoRecorrenteFormPage />} />
           <Route path="/lancamentos/:id/editar" element={<LancamentoSimplesFormPage />} />
+          <Route path="/importacao" element={<ImportacaoPage />} />
+          <Route path="/regras" element={<RegrasListPage />} />
+          <Route path="/regras/novo" element={<RegrasFormPage />} />
+          <Route path="/regras/:id/editar" element={<RegrasFormPage />} />
           <Route path="/settings/pin" element={<ChangePinPage />} />
         </Route>
       </Routes>
