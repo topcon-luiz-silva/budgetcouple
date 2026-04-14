@@ -49,6 +49,25 @@ public class Categoria : AggregateRoot
         });
     }
 
+    /// <summary>
+    /// Factory for seeding seed data with fixed GUID (for database seeding only).
+    /// </summary>
+    public static Categoria CreateForSeed(Guid id, string nome, TipoCategoria tipo, string icone, string cor, bool sistema = false)
+    {
+        return new Categoria
+        {
+            Id = id,
+            Nome = nome,
+            Tipo = tipo,
+            Icone = icone,
+            Cor = cor,
+            Sistema = sistema,
+            Ativa = true,
+            CriadoEm = DateTime.UtcNow,
+            AtualizadoEm = DateTime.UtcNow
+        };
+    }
+
     public Result Renomear(string novoNome)
     {
         // Validation: nome não vazio

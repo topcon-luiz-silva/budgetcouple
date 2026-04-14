@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace BudgetCouple.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -202,6 +204,37 @@ namespace BudgetCouple.Infrastructure.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "categorias",
+                columns: new[] { "id", "ativa", "cor", "criado_em", "icone", "nome", "tipo" },
+                values: new object[,]
+                {
+                    { new Guid("550e8400-e29b-41d4-a716-446655440001"), true, "#DC2626", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5792), "home", "Moradia", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440002"), true, "#F97316", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5820), "utensils", "Alimentação", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440003"), true, "#EAB308", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5840), "car", "Transporte", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440004"), true, "#EC4899", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5858), "heart-pulse", "Saúde", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440005"), true, "#3B82F6", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5875), "graduation-cap", "Educação", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440006"), true, "#8B5CF6", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5893), "film", "Lazer", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440007"), true, "#06B6D4", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5910), "repeat", "Assinaturas", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440008"), true, "#D946EF", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5927), "shirt", "Vestuário", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440009"), true, "#14B8A6", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5944), "paw-print", "Pets", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-44665544000a"), true, "#F43F5E", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5961), "gift", "Presentes", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-44665544000b"), true, "#64748B", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5978), "receipt", "Impostos e Taxas", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-44665544000c"), true, "#6366F1", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6001), "landmark", "Serviços Financeiros", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-44665544000d"), true, "#78716C", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6017), "more-horizontal", "Outros", "DESPESA" },
+                    { new Guid("550e8400-e29b-41d4-a716-44665544000e"), true, "#10B981", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6035), "wallet", "Salário", "RECEITA" },
+                    { new Guid("550e8400-e29b-41d4-a716-44665544000f"), true, "#84CC16", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6052), "award", "Bonificação", "RECEITA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440010"), true, "#06B6D4", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6069), "trending-up", "Rendimentos", "RECEITA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440011"), true, "#8B5CF6", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6085), "briefcase", "Freelance", "RECEITA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440012"), true, "#14B8A6", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6102), "undo-2", "Reembolso", "RECEITA" },
+                    { new Guid("550e8400-e29b-41d4-a716-446655440013"), true, "#78716C", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6119), "more-horizontal", "Outros", "RECEITA" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "categorias",
+                columns: new[] { "id", "ativa", "cor", "criado_em", "icone", "nome", "sistema", "tipo" },
+                values: new object[] { new Guid("550e8400-e29b-41d4-a716-446655440014"), true, "#0891B2", new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6136), "credit-card", "Pagamento de Fatura de Cartão", true, "DESPESA" });
 
             migrationBuilder.CreateIndex(
                 name: "ix_lanc_cartao_data",

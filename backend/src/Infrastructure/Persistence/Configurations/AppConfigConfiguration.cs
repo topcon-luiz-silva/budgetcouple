@@ -18,8 +18,7 @@ public class AppConfigConfiguration : IEntityTypeConfiguration<AppConfig>
 
         builder.Property(x => x.PinHash)
             .HasColumnName("pin_hash")
-            .HasColumnType("varchar(255)")
-            .IsRequired();
+            .HasColumnType("varchar(255)");
 
         builder.Property(x => x.PinSetAt)
             .HasColumnName("pin_set_at")

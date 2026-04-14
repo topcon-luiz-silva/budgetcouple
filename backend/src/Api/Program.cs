@@ -1,4 +1,5 @@
 using BudgetCouple.Application;
+using BudgetCouple.Domain.Identity;
 using BudgetCouple.Infrastructure;
 using BudgetCouple.Infrastructure.Persistence;
 using BudgetCouple.Infrastructure.Services.Auth;
@@ -121,9 +122,23 @@ var app = builder.Build();
 // Apply migrations
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate();
-    Log.Information("Migrations applied successfully");
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+        // Ensure initial AppConfig record exists (single-row table by design)
+        if (!await dbContext.AppConfigs.AnyAsync())
+        {
+            dbContext.AppConfigs.Add(AppConfig.Empty());
+            await dbContext.SaveChangesAsync();
+        }
+        logger.LogInformation("Migrations applied and AppConfig initialized");
+    }
+    catch (Exception ex)
+    {
+        logger.LogWarning(ex, "Database initialization skipped (DB unavailable). /health continues to work.");
+    }
 }
 
 // Middleware

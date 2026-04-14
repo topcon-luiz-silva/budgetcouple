@@ -21,7 +21,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
     {
         var context = new ValidationContext<TRequest>(request);
         var validationResults = await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-        var failures = validationResults.SelectMany(vr => vr.Errors).Where(f => f != null).ToList();
+        var failures = validationResults.SelectMany(vr => vr.Errors).Where(f => f != null!).ToList();
 
         if (failures.Count != 0)
         {
@@ -47,7 +47,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
                 // Result case (non-generic)
                 var error = Error.Validation(string.Join(", ", failures.Select(f => f.ErrorMessage)));
                 var result = Result.Failure(error);
-                return (TResponse?)(object?)result!;
+                return (TResponse)(object)result;
             }
 
             // If no Result support, throw ValidationException

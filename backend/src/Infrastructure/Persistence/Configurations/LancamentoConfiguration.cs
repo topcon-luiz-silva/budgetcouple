@@ -114,15 +114,15 @@ public class LancamentoConfiguration : IEntityTypeConfiguration<Lancamento>
         });
 
         // Foreign key constraint for origem
-        builder.HasCheckConstraint("chk_origem",
+        builder.ToTable(t => t.HasCheckConstraint("chk_origem",
             "(conta_id IS NOT NULL AND cartao_id IS NULL) OR " +
             "(conta_id IS NULL AND cartao_id IS NOT NULL) OR " +
-            "(conta_id IS NULL AND cartao_id IS NULL AND natureza = 'PREVISTA')");
+            "(conta_id IS NULL AND cartao_id IS NULL AND natureza = 'PREVISTA')"));
 
         // Indexes
-        builder.HasIndex(x => x.Data).HasName("ix_lanc_data");
-        builder.HasIndex(x => new { x.CartaoId, x.Data }).HasName("ix_lanc_cartao_data");
-        builder.HasIndex(x => new { x.ContaId, x.Data }).HasName("ix_lanc_conta_data");
-        builder.HasIndex(x => new { x.CategoriaId, x.Data }).HasName("ix_lanc_cat_data");
+        builder.HasIndex(x => x.Data).HasDatabaseName("ix_lanc_data");
+        builder.HasIndex(x => new { x.CartaoId, x.Data }).HasDatabaseName("ix_lanc_cartao_data");
+        builder.HasIndex(x => new { x.ContaId, x.Data }).HasDatabaseName("ix_lanc_conta_data");
+        builder.HasIndex(x => new { x.CategoriaId, x.Data }).HasDatabaseName("ix_lanc_cat_data");
     }
 }

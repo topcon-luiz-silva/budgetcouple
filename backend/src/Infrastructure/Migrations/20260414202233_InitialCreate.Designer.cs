@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BudgetCouple.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260414201341_InitialCreate")]
+    [Migration("20260414202233_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -134,6 +134,248 @@ namespace BudgetCouple.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("categorias", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440001"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5794),
+                            Cor = "#DC2626",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5792),
+                            Icone = "home",
+                            Nome = "Moradia",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440002"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5821),
+                            Cor = "#F97316",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5820),
+                            Icone = "utensils",
+                            Nome = "Alimentação",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440003"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5841),
+                            Cor = "#EAB308",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5840),
+                            Icone = "car",
+                            Nome = "Transporte",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440004"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5859),
+                            Cor = "#EC4899",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5858),
+                            Icone = "heart-pulse",
+                            Nome = "Saúde",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440005"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5876),
+                            Cor = "#3B82F6",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5875),
+                            Icone = "graduation-cap",
+                            Nome = "Educação",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440006"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5894),
+                            Cor = "#8B5CF6",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5893),
+                            Icone = "film",
+                            Nome = "Lazer",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440007"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5911),
+                            Cor = "#06B6D4",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5910),
+                            Icone = "repeat",
+                            Nome = "Assinaturas",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440008"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5927),
+                            Cor = "#D946EF",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5927),
+                            Icone = "shirt",
+                            Nome = "Vestuário",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440009"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5945),
+                            Cor = "#14B8A6",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5944),
+                            Icone = "paw-print",
+                            Nome = "Pets",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-44665544000a"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5962),
+                            Cor = "#F43F5E",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5961),
+                            Icone = "gift",
+                            Nome = "Presentes",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-44665544000b"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5979),
+                            Cor = "#64748B",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(5978),
+                            Icone = "receipt",
+                            Nome = "Impostos e Taxas",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-44665544000c"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6001),
+                            Cor = "#6366F1",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6001),
+                            Icone = "landmark",
+                            Nome = "Serviços Financeiros",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-44665544000d"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6018),
+                            Cor = "#78716C",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6017),
+                            Icone = "more-horizontal",
+                            Nome = "Outros",
+                            Sistema = false,
+                            Tipo = "DESPESA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-44665544000e"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6035),
+                            Cor = "#10B981",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6035),
+                            Icone = "wallet",
+                            Nome = "Salário",
+                            Sistema = false,
+                            Tipo = "RECEITA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-44665544000f"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6052),
+                            Cor = "#84CC16",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6052),
+                            Icone = "award",
+                            Nome = "Bonificação",
+                            Sistema = false,
+                            Tipo = "RECEITA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440010"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6069),
+                            Cor = "#06B6D4",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6069),
+                            Icone = "trending-up",
+                            Nome = "Rendimentos",
+                            Sistema = false,
+                            Tipo = "RECEITA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440011"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6085),
+                            Cor = "#8B5CF6",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6085),
+                            Icone = "briefcase",
+                            Nome = "Freelance",
+                            Sistema = false,
+                            Tipo = "RECEITA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440012"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6102),
+                            Cor = "#14B8A6",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6102),
+                            Icone = "undo-2",
+                            Nome = "Reembolso",
+                            Sistema = false,
+                            Tipo = "RECEITA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440013"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6119),
+                            Cor = "#78716C",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6119),
+                            Icone = "more-horizontal",
+                            Nome = "Outros",
+                            Sistema = false,
+                            Tipo = "RECEITA"
+                        },
+                        new
+                        {
+                            Id = new Guid("550e8400-e29b-41d4-a716-446655440014"),
+                            Ativa = true,
+                            AtualizadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6136),
+                            Cor = "#0891B2",
+                            CriadoEm = new DateTime(2026, 4, 14, 20, 22, 32, 223, DateTimeKind.Utc).AddTicks(6136),
+                            Icone = "credit-card",
+                            Nome = "Pagamento de Fatura de Cartão",
+                            Sistema = true,
+                            Tipo = "DESPESA"
+                        });
                 });
 
             modelBuilder.Entity("BudgetCouple.Domain.Accounting.Contas.Conta", b =>

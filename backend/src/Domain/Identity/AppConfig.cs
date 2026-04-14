@@ -35,6 +35,24 @@ public class AppConfig : AggregateRoot
     }
 
     /// <summary>
+    /// Factory method for seeding initial empty AppConfig (PIN not yet configured).
+    /// </summary>
+    public static AppConfig Empty()
+    {
+        return new AppConfig
+        {
+            Id = Guid.NewGuid(),
+            PinHash = string.Empty,
+            PinSetAt = null,
+            FailedAttempts = 0,
+            LockedUntil = null,
+            Tema = "light",
+            EmailNotificacao = null,
+            TelegramChatIds = new()
+        };
+    }
+
+    /// <summary>
     /// Attempts login with the provided PIN hash.
     /// Returns success if PIN matches and account is not locked.
     /// Increments failed attempts on failure.
