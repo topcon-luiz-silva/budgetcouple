@@ -9,6 +9,7 @@ using BudgetCouple.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -26,6 +27,7 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpGet("status")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth")]
     public async Task<ActionResult<AuthStatusDto>> GetStatus()
     {
         var query = new GetAuthStatusQuery();
@@ -38,6 +40,7 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpPost("setup-pin")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth")]
     public async Task<ActionResult<AuthResult>> SetupPin([FromBody] SetupPinRequest request)
     {
         var command = new SetupPinCommand(request.Pin);
@@ -50,6 +53,7 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpPost("login")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth")]
     public async Task<ActionResult<AuthResult>> Login([FromBody] LoginRequest request)
     {
         var command = new LoginCommand(request.Pin);
@@ -62,6 +66,7 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpPost("change-pin")]
     [Authorize]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> ChangePin([FromBody] ChangePinRequest request)
     {
         var command = new ChangePinCommand(request.PinAtual, request.NovoPin);

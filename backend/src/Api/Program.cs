@@ -8,12 +8,14 @@ using BudgetCouple.Api.Middleware;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using QuestPDF.Infrastructure;
 using Serilog;
 using System.Text;
+using System.Threading.RateLimiting;
 
 // Configure QuestPDF license
 QuestPDF.Settings.License = LicenseType.Community;
@@ -40,7 +42,11 @@ if (File.Exists(".env"))
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {CorrelationId} {UserId} {RequestPath} {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File(
+        "logs/budgetcouple-.log",
+        rollingInterval: RollingInterval.Day,
+        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] {Level:u3} {CorrelationId} {UserId} {RequestPath} {Message:lj}{NewLine}{Exception}")
     .Enrich.FromLogContext()
     .CreateLogger();
 
@@ -79,6 +85,43 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+// Add Rate Limiting
+builder.Services.AddRateLimiter(options =>
+{
+    // Global policy: 100 req/min per IP
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+
+    // Auth endpoints: 10 req/min (anti-brute-force)
+    options.AddPolicy("auth", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+
+    // Upload endpoints: 20 req/min
+    options.AddPolicy("upload", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+});
+
 // Add controllers and JSON options
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -114,16 +157,33 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Add CORS
-var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ??
-    new[] { "http://localhost:5173" };
+// Add CORS - Production vs Development
+var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+if (builder.Environment.IsProduction())
+{
+    corsOrigins = corsOrigins ?? new[] { "https://budgetcouple.vercel.app" };
+}
+else
+{
+    corsOrigins = corsOrigins ?? new[] { "*" };
+}
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("spa", builder =>
     {
-        builder.WithOrigins(corsOrigins)
-            .AllowAnyMethod()
+        foreach (var origin in corsOrigins)
+        {
+            if (origin == "*")
+            {
+                builder.AllowAnyOrigin();
+            }
+            else
+            {
+                builder.WithOrigins(origin);
+            }
+        }
+        builder.AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
     });
@@ -155,6 +215,9 @@ using (var scope = app.Services.CreateScope())
 
 // Middleware
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
+app.UseRateLimiter();
 app.UseHttpsRedirection();
 app.UseCors("spa");
 

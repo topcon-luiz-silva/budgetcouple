@@ -2,6 +2,7 @@ namespace BudgetCouple.Infrastructure.Persistence.Repositories;
 
 using BudgetCouple.Domain.Accounting.Lancamentos;
 using Microsoft.EntityFrameworkCore;
+using BudgetCouple.Application.Common.Interfaces;
 
 public class LancamentoAnexoRepository : ILancamentoAnexoRepository
 {
