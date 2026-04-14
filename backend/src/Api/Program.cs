@@ -3,7 +3,10 @@ using BudgetCouple.Domain.Identity;
 using BudgetCouple.Infrastructure;
 using BudgetCouple.Infrastructure.Persistence;
 using BudgetCouple.Infrastructure.Services.Auth;
+using BudgetCouple.Infrastructure.Services.Notifications;
 using BudgetCouple.Api.Middleware;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -46,6 +49,11 @@ builder.Host.UseSerilog();
 // Add services
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// Configure Hangfire
+builder.Services.AddHangfire(config =>
+    config.UseMemoryStorage());
+builder.Services.AddHangfireServer();
 
 // Configure JWT
 var jwtSecret = builder.Configuration["Jwt:Secret"] ??
@@ -152,6 +160,21 @@ app.UseCors("spa");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Configure Hangfire Dashboard
+app.UseHangfireDashboard("/hangfire");
+
+// Schedule recurring job for daily notifications (8 AM daily)
+using (var scope = app.Services.CreateScope())
+{
+    var jobClient = scope.ServiceProvider.GetRequiredService<IBackgroundJobClient>();
+    var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+
+    recurringJobManager.AddOrUpdate<DailyNotificationJob>(
+        "daily-notifications",
+        x => x.Execute(),
+        "0 8 * * *"); // 8 AM every day
+}
 
 app.MapControllers();
 

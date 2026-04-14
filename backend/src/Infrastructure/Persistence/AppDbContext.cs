@@ -10,6 +10,7 @@ using BudgetCouple.Domain.Budgeting.Metas;
 using BudgetCouple.Domain.Common;
 using BudgetCouple.Domain.Identity;
 using BudgetCouple.Domain.Imports;
+using BudgetCouple.Domain.Notifications;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -26,6 +27,8 @@ public class AppDbContext : DbContext, IApplicationDbContext, IUnitOfWork
     public DbSet<Recorrencia> Recorrencias { get; set; } = null!;
     public DbSet<Meta> Metas { get; set; } = null!;
     public DbSet<RegraClassificacao> RegrasClassificacao { get; set; } = null!;
+    public DbSet<NotificationPreferences> NotificationPreferences { get; set; } = null!;
+    public DbSet<NotificationHistory> NotificationHistory { get; set; } = null!;
 
     public AppDbContext(DbContextOptions<AppDbContext> options, IPublisher publisher) : base(options)
     {

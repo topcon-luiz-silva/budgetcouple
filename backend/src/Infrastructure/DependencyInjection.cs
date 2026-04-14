@@ -3,6 +3,7 @@ namespace BudgetCouple.Infrastructure;
 using BudgetCouple.Application.Common.Interfaces;
 using BudgetCouple.Application.Common.Interfaces.Accounting;
 using BudgetCouple.Application.Common.Interfaces.Budgeting;
+using BudgetCouple.Application.Notifications.Interfaces;
 using BudgetCouple.Infrastructure.Persistence;
 using BudgetCouple.Infrastructure.Persistence.Repositories;
 using BudgetCouple.Infrastructure.Repositories;
@@ -10,6 +11,7 @@ using BudgetCouple.Infrastructure.Services;
 using BudgetCouple.Infrastructure.Services.Auth;
 using BudgetCouple.Infrastructure.Services.Reports;
 using BudgetCouple.Infrastructure.Services.Import;
+using BudgetCouple.Infrastructure.Services.Notifications;
 using BudgetCouple.Application.Import.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,6 +41,8 @@ public static class DependencyInjection
         services.AddScoped<IRecorrenciaRepository, RecorrenciaRepository>();
         services.AddScoped<IRegraClassificacaoRepository, RegraClassificacaoRepository>();
         services.AddScoped<IMetaRepository, MetaRepository>();
+        services.AddScoped<INotificationPreferencesRepository, NotificationPreferencesRepository>();
+        services.AddScoped<INotificationHistoryRepository, NotificationHistoryRepository>();
 
         // Register services
         services.AddScoped<IPinHasher, PinHasher>();
@@ -64,6 +68,13 @@ public static class DependencyInjection
             }
         });
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+        // Register notification services
+        services.AddHttpClient<IEmailSender, ResendEmailSender>();
+        services.AddHttpClient<ITelegramSender, TelegramBotSender>();
+        services.AddScoped<IWebPushSender, WebPushSender>();
+        services.AddScoped<INotificationService, CompositeNotificationService>();
+        services.AddScoped<DailyNotificationJob>();
 
         return services;
     }
