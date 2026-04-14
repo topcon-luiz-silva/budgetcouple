@@ -6,6 +6,7 @@ using BudgetCouple.Infrastructure.Persistence;
 using BudgetCouple.Infrastructure.Persistence.Repositories;
 using BudgetCouple.Infrastructure.Services;
 using BudgetCouple.Infrastructure.Services.Auth;
+using BudgetCouple.Infrastructure.Services.Reports;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,8 @@ public static class DependencyInjection
         // Register services
         services.AddScoped<IPinHasher, PinHasher>();
         services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+        services.AddScoped<IExcelGenerator, ExcelGenerator>();
+        services.AddScoped<IPdfGenerator, PdfGenerator>();
 
         // Register JWT token service
         services.Configure<JwtTokenOptions>(options =>
