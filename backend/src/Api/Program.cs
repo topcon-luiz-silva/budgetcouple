@@ -242,9 +242,7 @@ using (var scope = app.Services.CreateScope())
 app.MapControllers();
 
 // Health endpoint (GET + HEAD para compatibilidade com UptimeRobot Free)
-app.MapMethods("/health", new[] { "GET", "HEAD" }, () => new { status = "ok", time = DateTime.UtcNow })
-    .WithName("Health")
-    .WithOpenApi()
+app.MapMethods("/health", new[] { "GET", "HEAD" }, () => Results.Ok(new { status = "ok", time = DateTime.UtcNow }))
     .AllowAnonymous();
 
 // Swagger
