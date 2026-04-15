@@ -43,13 +43,13 @@ public class PdfGenerator : IPdfGenerator
                     // Header
                     table.Header(header =>
                     {
-                        header.Cell().Background("#2C3E50").Text("Descrição").FontColor("white").Bold();
-                        header.Cell().Background("#2C3E50").Text("Valor").FontColor("white").Bold().AlignRight();
-                        header.Cell().Background("#2C3E50").Text("Data").FontColor("white").Bold();
-                        header.Cell().Background("#2C3E50").Text("Tipo").FontColor("white").Bold();
-                        header.Cell().Background("#2C3E50").Text("Natureza").FontColor("white").Bold();
-                        header.Cell().Background("#2C3E50").Text("Status").FontColor("white").Bold();
-                        header.Cell().Background("#2C3E50").Text("Categoria").FontColor("white").Bold();
+                        header.Cell().Background("2C3E50").Text("Descrição").FontColor("white").Bold();
+                        header.Cell().Background("2C3E50").Text("Valor").FontColor("white").Bold().AlignRight();
+                        header.Cell().Background("2C3E50").Text("Data").FontColor("white").Bold();
+                        header.Cell().Background("2C3E50").Text("Tipo").FontColor("white").Bold();
+                        header.Cell().Background("2C3E50").Text("Natureza").FontColor("white").Bold();
+                        header.Cell().Background("2C3E50").Text("Status").FontColor("white").Bold();
+                        header.Cell().Background("2C3E50").Text("Categoria").FontColor("white").Bold();
                     });
 
                     // Rows
@@ -131,9 +131,9 @@ public class PdfGenerator : IPdfGenerator
 
                             table.Header(header =>
                             {
-                                header.Cell().Background("#2C3E50").Text("Categoria").FontColor("white").Bold();
-                                header.Cell().Background("#2C3E50").Text("Total").FontColor("white").Bold();
-                                header.Cell().Background("#2C3E50").Text("% Total").FontColor("white").Bold();
+                                header.Cell().Background("2C3E50").Text("Categoria").FontColor("white").Bold();
+                                header.Cell().Background("2C3E50").Text("Total").FontColor("white").Bold();
+                                header.Cell().Background("2C3E50").Text("% Total").FontColor("white").Bold();
                             });
 
                             foreach (var cat in dashboard.PorCategoria.Take(10))
@@ -159,8 +159,8 @@ public class PdfGenerator : IPdfGenerator
 
                             table.Header(header =>
                             {
-                                header.Cell().Background("#2C3E50").Text("Conta").FontColor("white").Bold();
-                                header.Cell().Background("#2C3E50").Text("Saldo").FontColor("white").Bold();
+                                header.Cell().Background("2C3E50").Text("Conta").FontColor("white").Bold();
+                                header.Cell().Background("2C3E50").Text("Saldo").FontColor("white").Bold();
                             });
 
                             foreach (var conta in dashboard.PorConta)

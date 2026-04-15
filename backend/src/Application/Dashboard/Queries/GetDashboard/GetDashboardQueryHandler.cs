@@ -1,6 +1,5 @@
 namespace BudgetCouple.Application.Dashboard.Queries.GetDashboard;
 
-using BudgetCouple.Application.Budgeting.Metas.Queries;
 using BudgetCouple.Application.Common.Interfaces.Accounting;
 using BudgetCouple.Application.Common.Interfaces.Budgeting;
 using BudgetCouple.Application.Dashboard.DTOs;
@@ -18,7 +17,6 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
     private readonly IContaRepository _contaRepository;
     private readonly ICartaoRepository _cartaoRepository;
     private readonly IMetaRepository _metaRepository;
-    private readonly IMediator _mediator;
     private readonly ILogger<GetDashboardQueryHandler> _logger;
 
     public GetDashboardQueryHandler(
@@ -27,7 +25,6 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
         IContaRepository contaRepository,
         ICartaoRepository cartaoRepository,
         IMetaRepository metaRepository,
-        IMediator mediator,
         ILogger<GetDashboardQueryHandler> logger)
     {
         _lancamentoRepository = lancamentoRepository;
@@ -35,7 +32,6 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
         _contaRepository = contaRepository;
         _cartaoRepository = cartaoRepository;
         _metaRepository = metaRepository;
-        _mediator = mediator;
         _logger = logger;
     }
 
@@ -212,13 +208,8 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             .OrderBy(v => v.DataVencimento)
             .ToList();
 
-        // Get budget alerts for current month
-        var alertasResult = await _mediator.Send(new ListarAlertasOrcamentoQuery(), cancellationToken);
-        var alertasOrcamento = alertasResult.IsSuccess
-            ? alertasResult.Value
-                .Select(a => new AlertaOrcamentoDto(a.CategoriaNome ?? "Desconhecida", a.ValorAtual, a.ValorAlvo, a.PercentualUtilizado))
-                .ToList()
-            : new List<AlertaOrcamentoDto>();
+        // Get budget alerts for current month (inline to avoid nested transactions)
+        var alertasOrcamento = await BuildAlertasOrcamento(lancamentos, cancellationToken);
 
         var dashboard = new DashboardDto(
             request.Mes,
@@ -234,5 +225,60 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
         _logger.LogInformation("Dashboard gerado em {ElapsedMs}ms", sw.ElapsedMilliseconds);
 
         return Result.Success(dashboard);
+    }
+
+    private async Task<List<AlertaOrcamentoDto>> BuildAlertasOrcamento(List<Lancamento> lancamentos, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var alertas = new List<AlertaOrcamentoDto>();
+
+            // Get all REDUCAO_CATEGORIA metas
+            var metas = await _metaRepository.ListAsync(cancellationToken);
+            var metasReducao = metas.OfType<MetaReducaoCategoria>().ToList();
+
+            // Get current month date range
+            var hoje = DateOnly.FromDateTime(DateTime.UtcNow);
+            var primeiroDiaMes = new DateOnly(hoje.Year, hoje.Month, 1);
+            var ultimoDiaMes = primeiroDiaMes.AddMonths(1).AddDays(-1);
+
+            // Get all categorias
+            var categorias = await _categoriaRepository.ListAsync(cancellationToken);
+            var categoriaCache = categorias.ToDictionary(c => c.Id);
+
+            // Calculate alerts for each REDUCAO_CATEGORIA meta
+            foreach (var meta in metasReducao)
+            {
+                if (!meta.CategoriaId.HasValue || !meta.Ativa)
+                    continue;
+
+                var gastoMes = lancamentos
+                    .Where(l => l.CategoriaId == meta.CategoriaId &&
+                               l.Tipo == TipoLancamento.DESPESA &&
+                               l.Natureza == NaturezaLancamento.REALIZADA)
+                    .Sum(l => l.Valor);
+
+                var percentualUtilizado = meta.ValorAlvo > 0 ? (gastoMes / meta.ValorAlvo) * 100 : 0;
+
+                // Create alert if spending >= alert threshold
+                if (percentualUtilizado >= meta.PercentualAlerta)
+                {
+                    var categoriaNome = categoriaCache.GetValueOrDefault(meta.CategoriaId.Value)?.Nome;
+
+                    alertas.Add(new AlertaOrcamentoDto(
+                        categoriaNome ?? "Desconhecida",
+                        gastoMes,
+                        meta.ValorAlvo,
+                        percentualUtilizado));
+                }
+            }
+
+            return alertas;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Erro ao buscar alertas de orçamento para dashboard");
+            return new List<AlertaOrcamentoDto>();
+        }
     }
 }
