@@ -38,9 +38,9 @@ export function CartaoFormPage() {
     formState: { errors },
     reset,
     watch,
-  } = useForm<any>({
+  } = useForm({
     resolver: zodResolver(cartaoFormSchema),
-  })
+  }) as unknown as ReturnType<typeof useForm>
 
   const corHex = watch('corHex')
 
@@ -50,9 +50,9 @@ export function CartaoFormPage() {
         nome: cartaoExistente.nome,
         bandeira: cartaoExistente.bandeira,
         ultimosDigitos: cartaoExistente.ultimosDigitos,
-        limite: cartaoExistente.limite,
-        diaFechamento: cartaoExistente.diaFechamento,
-        diaVencimento: cartaoExistente.diaVencimento,
+        limite: cartaoExistente.limite.toString(),
+        diaFechamento: cartaoExistente.diaFechamento.toString(),
+        diaVencimento: cartaoExistente.diaVencimento.toString(),
         contaPagamentoId: cartaoExistente.contaPagamentoId,
         corHex: cartaoExistente.corHex,
         icone: cartaoExistente.icone,
@@ -60,13 +60,14 @@ export function CartaoFormPage() {
     }
   }, [cartaoExistente, reset])
 
-  const onSubmit = (data: CartaoFormData) => {
+  const onSubmit = (data: unknown) => {
+    const formData = data as CartaoFormData
     if (isEditing) {
-      updateCartao(data, {
+      updateCartao(formData, {
         onSuccess: () => navigate('/cartoes'),
       })
     } else {
-      createCartao(data, {
+      createCartao(formData, {
         onSuccess: () => navigate('/cartoes'),
       })
     }

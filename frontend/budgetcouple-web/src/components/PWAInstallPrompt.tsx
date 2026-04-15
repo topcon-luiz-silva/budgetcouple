@@ -7,17 +7,19 @@ export function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false)
 
   useEffect(() => {
+    // Check if already installed
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
       setInstallPrompt(e as BeforeInstallPromptEvent)
-      setShowPrompt(true)
+      if (!isInstalled) {
+        setShowPrompt(true)
+      }
     }
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setShowPrompt(false)
+    if (!isInstalled) {
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     }
 
     return () => {

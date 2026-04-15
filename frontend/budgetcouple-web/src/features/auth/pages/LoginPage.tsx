@@ -37,24 +37,26 @@ export function LoginPage() {
     login(data.pin)
   }
 
-  let errorMessage: string | null = null
-  if (error instanceof AxiosError) {
-    if (error.response?.status === 403) {
-      const lockedUntil = error.response?.data?.lockedUntil
-      if (lockedUntil) {
-        const minutes = Math.ceil(
-          (new Date(lockedUntil).getTime() - Date.now()) / 60000
-        )
-        errorMessage = t('auth.error.lockedWithTime', { minutes })
+  const errorMessage = (() => {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 403) {
+        const lockedUntil = error.response?.data?.lockedUntil
+        if (lockedUntil) {
+          const minutes = Math.ceil(
+            (new Date(lockedUntil).getTime() - Date.now()) / 60000
+          )
+          return t('auth.error.lockedWithTime', { minutes })
+        } else {
+          return t('auth.error.lockedNoTime')
+        }
+      } else if (error.response?.status === 401) {
+        return t('auth.error.invalidPin')
       } else {
-        errorMessage = t('auth.error.lockedNoTime')
+        return error.message
       }
-    } else if (error.response?.status === 401) {
-      errorMessage = t('auth.error.invalidPin')
-    } else {
-      errorMessage = error.message
     }
-  }
+    return null
+  })()
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-4 bg-slate-50">

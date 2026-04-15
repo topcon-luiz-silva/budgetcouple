@@ -44,8 +44,8 @@ export function LancamentoAnexosSection({ lancamentoId }: LancamentoAnexosSectio
           fileInputRef.current.value = ''
         }
       },
-      onError: (_error: any) => {
-        toast.error(_error.response?.data?.error || 'Erro ao enviar anexo')
+      onError: () => {
+        toast.error('Erro ao enviar anexo')
       },
     })
   }
@@ -68,19 +68,9 @@ export function LancamentoAnexosSection({ lancamentoId }: LancamentoAnexosSectio
     }
   }
 
-  const handleDownload = (anexoId: string, nomeArquivo: string) => {
+  const handleDownload = (anexoId: string) => {
     downloadAnexo({ lancamentoId, anexoId }, {
-      onSuccess: (response: any) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]))
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', nomeArquivo)
-        document.body.appendChild(link)
-        link.click()
-        link.parentElement?.removeChild(link)
-        window.URL.revokeObjectURL(url)
-      },
-      onError: (_error: any) => {
+      onError: () => {
         toast.error('Erro ao fazer download')
       },
     })
@@ -93,7 +83,7 @@ export function LancamentoAnexosSection({ lancamentoId }: LancamentoAnexosSectio
       onSuccess: () => {
         toast.success('Anexo deletado com sucesso')
       },
-      onError: (_error: any) => {
+      onError: () => {
         toast.error('Erro ao deletar anexo')
       },
     })
@@ -200,7 +190,7 @@ export function LancamentoAnexosSection({ lancamentoId }: LancamentoAnexosSectio
 
               <div className="flex items-center space-x-2 flex-shrink-0">
                 <Button
-                  onClick={() => handleDownload(anexo.id, anexo.nomeArquivo)}
+                  onClick={() => handleDownload(anexo.id)}
                   disabled={isDownloadingAnexo}
                   size="sm"
                   variant="ghost"
