@@ -4,6 +4,7 @@ using BudgetCouple.Application.Common.Interfaces.Accounting;
 using BudgetCouple.Application.Common.Interfaces.Budgeting;
 using BudgetCouple.Application.Dashboard.DTOs;
 using BudgetCouple.Domain.Accounting;
+using BudgetCouple.Domain.Accounting.Lancamentos;
 using BudgetCouple.Domain.Budgeting.Metas;
 using BudgetCouple.Domain.Common;
 using MediatR;

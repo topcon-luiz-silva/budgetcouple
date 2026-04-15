@@ -40,7 +40,6 @@ public class GetDashboardQueryHandlerTests
             _mockContaRepository.Object,
             _mockCartaoRepository.Object,
             _mockMetaRepository.Object,
-            _mockMediator.Object,
             _mockLogger.Object);
     }
 
