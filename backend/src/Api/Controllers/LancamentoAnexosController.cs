@@ -4,6 +4,7 @@ using BudgetCouple.Application.Accounting.Commands.Lancamentos.AdicionarAnexo;
 using BudgetCouple.Application.Accounting.Commands.Lancamentos.DeletarAnexo;
 using BudgetCouple.Application.Accounting.Queries.Lancamentos.GetAnexos;
 using BudgetCouple.Application.Accounting.Queries.Lancamentos.GetAnexoById;
+using BudgetCouple.Application.Common.Interfaces;
 using BudgetCouple.Domain.Common;
 using BudgetCouple.Infrastructure.FileStorage;
 using MediatR;

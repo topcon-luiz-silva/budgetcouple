@@ -9,6 +9,7 @@ using BudgetCouple.Domain.Accounting.Recorrencias;
 using BudgetCouple.Domain.Budgeting.Metas;
 using BudgetCouple.Domain.Identity;
 using BudgetCouple.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using BudgetCouple.Domain.Imports;
@@ -78,7 +79,7 @@ public class BackupService : IBackupService
         if (backup == null)
             throw new InvalidOperationException("Backup data não pôde ser desserializado.");
 
-        using var transaction = await _dbContext.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await _dbContext.BeginTransactionAsync(cancellationToken);
         try
         {
             if (mode == "replace")
