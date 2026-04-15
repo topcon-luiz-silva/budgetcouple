@@ -241,8 +241,8 @@ using (var scope = app.Services.CreateScope())
 
 app.MapControllers();
 
-// Health endpoint
-app.MapGet("/health", () => new { status = "ok", time = DateTime.UtcNow })
+// Health endpoint (GET + HEAD para compatibilidade com UptimeRobot Free)
+app.MapMethods("/health", new[] { "GET", "HEAD" }, () => new { status = "ok", time = DateTime.UtcNow })
     .WithName("Health")
     .WithOpenApi()
     .AllowAnonymous();
