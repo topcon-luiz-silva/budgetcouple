@@ -33,8 +33,8 @@ public class ListFaturasQueryHandler : IRequestHandler<ListFaturasQuery, Result<
         var hoje = DateOnly.FromDateTime(DateTime.UtcNow);
         var competencias = new Dictionary<string, List<Domain.Accounting.Lancamentos.Lancamento>>();
 
-        // Generate last 12 months competencias
-        for (int i = 11; i >= 0; i--)
+        // Generate competências: últimos 12 meses + próximos 12 (para ver parcelas futuras).
+        for (int i = 11; i >= -12; i--)
         {
             var dataBase = hoje.AddMonths(-i);
             var competenciaKey = dataBase.ToString("yyyy-MM");
@@ -66,9 +66,12 @@ public class ListFaturasQueryHandler : IRequestHandler<ListFaturasQuery, Result<
                 var ano = int.Parse(parts[0]);
                 var mes = int.Parse(parts[1]);
 
-                // Calculate due date
+                // Calculate due date: DiaVencimento do MESMO mês da competência.
+                // Só avança 1 mês se DiaVencimento < DiaFechamento.
                 var competenciaDate = new DateOnly(ano, mes, 1);
-                var mesVencimento = competenciaDate.AddMonths(1);
+                var mesVencimento = cartao.DiaVencimento < cartao.DiaFechamento
+                    ? competenciaDate.AddMonths(1)
+                    : competenciaDate;
                 int dia = Math.Min(cartao.DiaVencimento, DateTime.DaysInMonth(mesVencimento.Year, mesVencimento.Month));
                 var dataVencimento = new DateOnly(mesVencimento.Year, mesVencimento.Month, dia);
 

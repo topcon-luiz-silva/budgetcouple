@@ -26,9 +26,11 @@ public class Fatura
         Competencia = competencia;
         Lancamentos = lancamentos.ToList();
 
-        // Calculate due date: Competencia + month + Cartao.DiaVencimento
-        var mesVencimento = Competencia.AddMonths(1);
-        // Cap day at end of month if DiaVencimento is beyond month length
+        // Calculate due date: DiaVencimento do MESMO mês da competência.
+        // Se DiaVencimento < DiaFechamento (vencimento antes do fechamento), avança 1 mês.
+        var mesVencimento = Cartao.DiaVencimento < Cartao.DiaFechamento
+            ? Competencia.AddMonths(1)
+            : Competencia;
         int dia = Math.Min(Cartao.DiaVencimento, DateTime.DaysInMonth(mesVencimento.Year, mesVencimento.Month));
         DataVencimento = new DateOnly(mesVencimento.Year, mesVencimento.Month, dia);
 
