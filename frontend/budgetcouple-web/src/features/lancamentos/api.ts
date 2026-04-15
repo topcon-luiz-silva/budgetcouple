@@ -64,7 +64,7 @@ function validateResponse<T>(data: unknown, schema: z.ZodSchema<T>, context: str
     return schema.parse(data)
   } catch (error) {
     const message = error instanceof z.ZodError 
-      ? `${context}: ${error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`
+      ? `${context}: ${error.issues.map((issue: any) => `${issue.path.join('.')}: ${issue.message}`).join(', ')}`
       : `${context}: validation failed`
     console.warn(`[Contract Test Warning] ${message}`)
     throw new Error(`API response validation failed: ${message}`)

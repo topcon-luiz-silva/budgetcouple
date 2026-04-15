@@ -55,7 +55,7 @@ export function LancamentosListPage() {
 
   const pageSize = 10
 
-  const { data: lancamentos = { items: [], total: 0, skip: 0, take: 0 }, isPending: isLoading, error } = useLancamentosList({
+  const { data: lancamentosData = { items: [], total: 0, skip: 0, take: 0 }, isPending: isLoading, error } = useLancamentosList({
     dataInicio: filters.dataInicio,
     dataFim: filters.dataFim,
     contaId: filters.contaId || undefined,
@@ -66,9 +66,22 @@ export function LancamentosListPage() {
     take: pageSize,
   })
 
-  const { data: contas = [] } = useContasList()
-  const { data: cartoes = [] } = useCartoesList()
-  const { data: categorias = [] } = useCategoriasList()
+  // Defensive: ensure items is always an array
+  const lancamentos = useMemo(() => ({
+    items: Array.isArray(lancamentosData?.items) ? lancamentosData.items : [],
+    total: typeof lancamentosData?.total === 'number' ? lancamentosData.total : 0,
+    skip: lancamentosData?.skip ?? 0,
+    take: lancamentosData?.take ?? pageSize,
+  }), [lancamentosData, pageSize])
+
+  const { data: contasData = [] } = useContasList()
+  const { data: cartoesData = [] } = useCartoesList()
+  const { data: categoriasData = [] } = useCategoriasList()
+
+  // Defensive: ensure arrays
+  const contas = Array.isArray(contasData) ? contasData : []
+  const cartoes = Array.isArray(cartoesData) ? cartoesData : []
+  const categorias = Array.isArray(categoriasData) ? categoriasData : []
 
   const { mutate: deleteLancamento, isPending: isDeleting, error: deleteError } = useDeleteLancamento()
   const { mutate: pagarLancamento, isPending: isPagarPending, error: pagarError } = usePagarLancamento()
@@ -255,9 +268,9 @@ export function LancamentosListPage() {
               onChange={(e) => handleFilterChange('contaId', e.target.value)}
             >
               <option value="">Todas</option>
-              {contas.map((conta) => (
-                <option key={conta.id} value={conta.id}>
-                  {conta.nome}
+              {contas.map((c) => (
+                <option key={c?.id} value={c?.id ?? ''}>
+                  {c?.nome ?? 'Sem nome'}
                 </option>
               ))}
             </Select>
@@ -271,9 +284,9 @@ export function LancamentosListPage() {
               onChange={(e) => handleFilterChange('cartaoId', e.target.value)}
             >
               <option value="">Todos</option>
-              {cartoes.map((cartao) => (
-                <option key={cartao.id} value={cartao.id}>
-                  {cartao.nome}
+              {cartoes.map((c) => (
+                <option key={c?.id} value={c?.id ?? ''}>
+                  {c?.nome ?? 'Sem nome'}
                 </option>
               ))}
             </Select>
@@ -287,9 +300,9 @@ export function LancamentosListPage() {
               onChange={(e) => handleFilterChange('categoriaId', e.target.value)}
             >
               <option value="">Todas</option>
-              {categorias.map((categoria) => (
-                <option key={categoria.id} value={categoria.id}>
-                  {categoria.nome}
+              {categorias.map((c) => (
+                <option key={c?.id} value={c?.id ?? ''}>
+                  {c?.nome ?? 'Sem nome'}
                 </option>
               ))}
             </Select>
@@ -297,7 +310,11 @@ export function LancamentosListPage() {
 
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
-            <Select value={filters.status} onChange={(e) => handleFilterChange('status', e.target.value)}>
+            <Select
+              id="status"
+              value={filters.status}
+              onChange={(e) => handleFilterChange('status', e.target.value)}
+            >
               <option value="">Todos</option>
               <option value="PREVISTO">Previsto</option>
               <option value="REALIZADO">Realizado</option>
@@ -307,7 +324,7 @@ export function LancamentosListPage() {
         </div>
       </div>
 
-      {/* Error Alert */}
+      {/* Error */}
       {errorMessage && (
         <Alert variant="destructive">
           <AlertTitle>Erro</AlertTitle>
@@ -315,21 +332,22 @@ export function LancamentosListPage() {
         </Alert>
       )}
 
-      {/* Table */}
-      {isLoading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-12 bg-slate-200 rounded-md animate-pulse" />
-          ))}
-        </div>
-      ) : lancamentos.items.length === 0 ? (
+      {/* Loading */}
+      {isLoading && (
+        <Alert>
+          <AlertTitle>Carregando...</AlertTitle>
+          <AlertDescription>Buscando lançamentos</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && lancamentos.items.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg border border-slate-200">
-          <DollarSign className="h-12 w-12 text-slate-300 mx-auto mb-4" />
           <p className="text-slate-600 mb-4">Nenhum lançamento encontrado</p>
           <Link to="/lancamentos/novo/simples">
             <Button>
               <Plus className="h-5 w-5 mr-2" />
-              Novo Lançamento
+              Adicionar Lançamento
             </Button>
           </Link>
         </div>
@@ -348,74 +366,77 @@ export function LancamentosListPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {lancamentos.items.map((lancamento) => (
-                <TableRow key={lancamento.id}>
-                  <TableCell className="font-medium">
-                    {format(new Date(lancamento.dataCompetencia), 'dd/MM/yyyy')}
-                  </TableCell>
-                  <TableCell>{lancamento.descricao}</TableCell>
-                  <TableCell>{categoriaMap.get(lancamento.categoriaId) || '-'}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {lancamento.contaId && contaMap.get(lancamento.contaId)}
-                      {lancamento.cartaoId && (
-                        <>
-                          <Badge className="text-xs">
-                            Cartão
-                          </Badge>
-                          {cartaoMap.get(lancamento.cartaoId)}
-                        </>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    <span
-                      className={
-                        lancamento.naturezaLancamento === 'RECEITA' ? 'text-green-600' : 'text-red-600'
-                      }
-                    >
-                      {lancamento.naturezaLancamento === 'RECEITA' ? '+' : '-'} R${' '}
-                      {Math.abs(lancamento.valor).toFixed(2)}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={statusColors[lancamento.statusPagamento]}>
-                      {statusLabels[lancamento.statusPagamento]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Link to={`/lancamentos/${lancamento.id}/editar`}>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                      {lancamento.statusPagamento === 'PREVISTO' && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-green-600 hover:text-green-800"
-                          onClick={() => setPagarDialogId(lancamento.id)}
-                        >
-                          <DollarSign className="h-4 w-4" />
-                        </Button>
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-600 hover:text-red-800"
-                        onClick={() => setDeleteConfirmId(lancamento.id)}
+              {Array.isArray(lancamentos.items) && lancamentos.items.map((lancamento) => {
+                if (!lancamento?.id) return null
+                return (
+                  <TableRow key={lancamento.id}>
+                    <TableCell className="font-medium">
+                      {lancamento.dataCompetencia ? format(new Date(lancamento.dataCompetencia), 'dd/MM/yyyy') : '-'}
+                    </TableCell>
+                    <TableCell>{lancamento.descricao ?? '-'}</TableCell>
+                    <TableCell>{categoriaMap.get(lancamento.categoriaId) ?? '-'}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {lancamento.contaId && contaMap.get(lancamento.contaId)}
+                        {lancamento.cartaoId && (
+                          <>
+                            <Badge className="text-xs">
+                              Cartão
+                            </Badge>
+                            {cartaoMap.get(lancamento.cartaoId)}
+                          </>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      <span
+                        className={
+                          lancamento.naturezaLancamento === 'RECEITA' ? 'text-green-600' : 'text-red-600'
+                        }
                       >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        {lancamento.naturezaLancamento === 'RECEITA' ? '+' : '-'} R${' '}
+                        {typeof lancamento.valor === 'number' ? Math.abs(lancamento.valor).toFixed(2) : '0.00'}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={statusColors[lancamento.statusPagamento] ?? ''}>
+                        {statusLabels[lancamento.statusPagamento] ?? 'Desconhecido'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Link to={`/lancamentos/${lancamento.id}/editar`}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                        {lancamento.statusPagamento === 'PREVISTO' && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-green-600 hover:text-green-800"
+                            onClick={() => setPagarDialogId(lancamento.id)}
+                          >
+                            <DollarSign className="h-4 w-4" />
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-800"
+                          onClick={() => setDeleteConfirmId(lancamento.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </div>

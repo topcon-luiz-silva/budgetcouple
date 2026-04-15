@@ -25,9 +25,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 
         if (failures.Count != 0)
         {
-            // If response implements Result, return failure
-            var firstFailure = failures.First();
-            var errorMessage = firstFailure.ErrorMessage;
+            var error = Error.Validation(string.Join(", ", failures.Select(f => f.ErrorMessage)));
 
             // Try to return a Result failure if the response type supports it
             if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(Result<>))
@@ -35,20 +33,23 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
                 // Result<T> case
                 var valueType = typeof(TResponse).GetGenericArguments()[0];
                 // Use GetMethods() and filter by generic to avoid AmbiguousMatchException
-                // (Result has both `Failure(Error)` and `Failure<T>(Error)`)
+                // Match: Failure<T>(Error error)
                 var failureMethod = typeof(Result)
                     .GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
-                    .First(m => m.Name == "Failure" && m.IsGenericMethodDefinition)
+                    .Where(m => m.Name == "Failure" && m.IsGenericMethodDefinition)
+                    .Where(m => m.GetParameters().Length == 1 && m.GetParameters()[0].ParameterType == typeof(Error))
+                    .FirstOrDefault()?
                     .MakeGenericMethod(valueType);
 
-                var error = Error.Validation(string.Join(", ", failures.Select(f => f.ErrorMessage)));
-                var result = failureMethod?.Invoke(null, new object[] { error });
-                return (TResponse?)result!;
+                if (failureMethod != null)
+                {
+                    var result = failureMethod.Invoke(null, new object[] { error });
+                    return (TResponse?)result!;
+                }
             }
             else if (typeof(TResponse) == typeof(Result))
             {
                 // Result case (non-generic)
-                var error = Error.Validation(string.Join(", ", failures.Select(f => f.ErrorMessage)));
                 var result = Result.Failure(error);
                 return (TResponse)(object)result;
             }
