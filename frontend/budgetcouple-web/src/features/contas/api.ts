@@ -11,8 +11,8 @@ const contaSchema = z.object({
   corHex: z.string(),
   icone: z.string(),
   observacoes: z.string().optional(),
-  criadoEm: z.string(),
-  atualizadoEm: z.string(),
+  criadoEm: z.string().optional(),
+  atualizadoEm: z.string().optional(),
 }).passthrough()
 
 function validateResponse<T>(data: unknown, schema: z.ZodSchema<T>, context: string): T {

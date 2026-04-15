@@ -14,8 +14,8 @@ const cartaoSchema = z.object({
   contaPagamentoId: z.string(),
   corHex: z.string(),
   icone: z.string(),
-  criadoEm: z.string(),
-  atualizadoEm: z.string(),
+  criadoEm: z.string().optional(),
+  atualizadoEm: z.string().optional(),
 }).passthrough()
 
 function validateResponse<T>(data: unknown, schema: z.ZodSchema<T>, context: string): T {

@@ -29,8 +29,8 @@ const lancamentoSchema = z.object({
   recorrenciaId: z.string().optional(),
   numeroMês: z.number().optional(),
   totalMeses: z.number().optional(),
-  criadoEm: z.string(),
-  atualizadoEm: z.string(),
+  criadoEm: z.string().optional(),
+  atualizadoEm: z.string().optional(),
 })
 
 const listaLancamentosResponseSchema = z.object({
@@ -55,8 +55,8 @@ const recorrenciaSchema = z.object({
   tags: z.array(z.string()).default([]),
   observacoes: z.string().optional(),
   ativa: z.boolean(),
-  criadoEm: z.string(),
-  atualizadoEm: z.string(),
+  criadoEm: z.string().optional(),
+  atualizadoEm: z.string().optional(),
 })
 
 function validateResponse<T>(data: unknown, schema: z.ZodSchema<T>, context: string): T {
