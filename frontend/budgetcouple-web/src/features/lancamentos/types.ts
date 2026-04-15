@@ -58,8 +58,8 @@ export interface Lancamento {
   recorrenciaId?: string
   numeroMês?: number
   totalMeses?: number
-  criadoEm: string
-  atualizadoEm: string
+  criadoEm?: string
+  atualizadoEm?: string
 }
 
 export interface ListaLancamentosResponse {
@@ -84,8 +84,8 @@ export interface Recorrencia {
   tags: string[]
   observacoes?: string
   ativa: boolean
-  criadoEm: string
-  atualizadoEm: string
+  criadoEm?: string
+  atualizadoEm?: string
 }
 
 // Zod Schemas

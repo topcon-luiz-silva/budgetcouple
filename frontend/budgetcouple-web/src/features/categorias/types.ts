@@ -14,8 +14,8 @@ export interface Categoria {
   corHex: string
   icone: string
   parentCategoriaId?: string
-  criadoEm: string
-  atualizadoEm: string
+  criadoEm?: string
+  atualizadoEm?: string
   sistema?: boolean
   ativa?: boolean
 }

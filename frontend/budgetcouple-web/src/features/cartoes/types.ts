@@ -11,8 +11,8 @@ export interface Cartao {
   contaPagamentoId: string
   corHex: string
   icone: string
-  criadoEm: string
-  atualizadoEm: string
+  criadoEm?: string
+  atualizadoEm?: string
   ativa?: boolean
 }
 

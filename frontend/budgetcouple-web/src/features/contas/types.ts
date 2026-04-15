@@ -17,8 +17,8 @@ export interface Conta {
   corHex: string
   icone: string
   observacoes?: string
-  criadoEm: string
-  atualizadoEm: string
+  criadoEm?: string
+  atualizadoEm?: string
   saldoAtual?: number
   ativa?: boolean
 }
