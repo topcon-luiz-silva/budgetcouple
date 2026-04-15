@@ -92,6 +92,9 @@ public class GetFaturaQueryHandler : IRequestHandler<GetFaturaQuery, Result<Fatu
     }
 
     private static LancamentoDto MapLancamentoToDto(Domain.Accounting.Lancamentos.Lancamento l) =>
+        LancamentoDto.FromDomain(l);
+
+    private static LancamentoDto MapLancamentoToDto_UNUSED(Domain.Accounting.Lancamentos.Lancamento l) =>
         new LancamentoDto(
             Id: l.Id,
             Descricao: l.Descricao ?? "",
@@ -99,9 +102,9 @@ public class GetFaturaQueryHandler : IRequestHandler<GetFaturaQuery, Result<Fatu
             DataCompetencia: l.Data,
             DataVencimento: null,
             DataPagamento: l.DataPagamento,
-            TipoLancamento: l.Tipo,
-            NaturezaLancamento: l.Natureza,
-            StatusPagamento: l.StatusPagamento,
+            TipoLancamento: l.Tipo.ToString(),
+            NaturezaLancamento: l.Tipo.ToString(),
+            StatusPagamento: l.StatusPagamento.ToString(),
             ContaId: l.ContaId,
             ContaNome: null,
             CartaoId: l.CartaoId,

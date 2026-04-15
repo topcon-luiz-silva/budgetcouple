@@ -61,6 +61,10 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             int.MaxValue,
             cancellationToken);
 
+        // Excluir transferências (marcadas com tag interna) de todas as agregações do dashboard.
+        // Transferências entre contas próprias não são receitas nem despesas de fato.
+        lancamentos = lancamentos.Where(l => !l.Tags.Contains("__TRANSFERENCIA__")).ToList();
+
         // Get all contas and cartoes
         var contas = await _contaRepository.ListAsync(cancellationToken);
         var cartoes = await _cartaoRepository.ListAsync(cancellationToken);

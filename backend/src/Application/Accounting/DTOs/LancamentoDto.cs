@@ -13,9 +13,9 @@ public record LancamentoDto(
     DateOnly DataCompetencia,
     DateOnly? DataVencimento,
     DateOnly? DataPagamento,
-    TipoLancamento TipoLancamento,
-    NaturezaLancamento NaturezaLancamento,
-    StatusPagamento StatusPagamento,
+    string TipoLancamento,
+    string NaturezaLancamento,
+    string StatusPagamento,
     Guid? ContaId,
     string? ContaNome,
     Guid? CartaoId,
@@ -40,6 +40,15 @@ public record LancamentoDto(
         string categoriaNome = "",
         string? subcategoriaNome = null)
     {
+        // Map domain enums to frontend-facing strings.
+        // Frontend expects:
+        //   naturezaLancamento: 'RECEITA' | 'DESPESA' | 'TRANSFERENCIA'
+        //   statusPagamento:    'PREVISTO' | 'REALIZADO' | 'ATRASADO'
+        var naturezaStr = lancamento.Tipo.ToString();
+        var statusStr = lancamento.StatusPagamento == Domain.Accounting.StatusPagamento.ATRASADO
+            ? "ATRASADO"
+            : (lancamento.Natureza == Domain.Accounting.NaturezaLancamento.REALIZADA ? "REALIZADO" : "PREVISTO");
+
         return new LancamentoDto(
             Id: lancamento.Id,
             Descricao: lancamento.Descricao ?? "",
@@ -47,9 +56,9 @@ public record LancamentoDto(
             DataCompetencia: lancamento.Data,
             DataVencimento: null, // DataVencimento is not stored in domain
             DataPagamento: lancamento.DataPagamento,
-            TipoLancamento: lancamento.Tipo,
-            NaturezaLancamento: lancamento.Natureza,
-            StatusPagamento: lancamento.StatusPagamento,
+            TipoLancamento: lancamento.Tipo.ToString(),
+            NaturezaLancamento: naturezaStr,
+            StatusPagamento: statusStr,
             ContaId: lancamento.ContaId,
             ContaNome: contaNome,
             CartaoId: lancamento.CartaoId,

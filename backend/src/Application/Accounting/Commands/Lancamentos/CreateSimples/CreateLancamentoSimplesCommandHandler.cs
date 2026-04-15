@@ -89,6 +89,12 @@ public class CreateLancamentoSimplesCommandHandler : IRequestHandler<CreateLanca
             lancamento.Tags.AddRange(request.Tags);
         }
 
+        // Marcar transferências com tag interna para que dashboard possa excluí-las
+        if (request.NaturezaLancamento == "TRANSFERENCIA" && !lancamento.Tags.Contains("__TRANSFERENCIA__"))
+        {
+            lancamento.Tags.Add("__TRANSFERENCIA__");
+        }
+
         // If REALIZADO, mark as paid
         if (request.StatusPagamento == "REALIZADO")
         {

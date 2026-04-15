@@ -90,6 +90,16 @@ public class CreateLancamentoParceladoCommandHandler : IRequestHandler<CreateLan
             }
         }
 
+        // Marcar transferências com tag interna para que dashboard possa excluí-las
+        if (request.NaturezaLancamento == "TRANSFERENCIA")
+        {
+            foreach (var lancamento in lancamentos)
+            {
+                if (!lancamento.Tags.Contains("__TRANSFERENCIA__"))
+                    lancamento.Tags.Add("__TRANSFERENCIA__");
+            }
+        }
+
         _lancamentoRepository.AddRange(lancamentos);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
