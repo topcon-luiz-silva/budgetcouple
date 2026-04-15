@@ -84,8 +84,8 @@ public class LoginCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Contains("PIN incorreto", result.Error.Description);
-        Assert.Contains("4", result.Error.Description); // 4 remaining attempts
+        Assert.Contains("PIN incorreto", result.Error.Message);
+        Assert.Contains("4", result.Error.Message); // 4 remaining attempts
         _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -114,7 +114,7 @@ public class LoginCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Contains("bloqueado", result.Error.Description.ToLower());
+        Assert.Contains("bloqueado", result.Error.Message.ToLower());
         _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -134,7 +134,7 @@ public class LoginCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Contains("não configurado", result.Error.Description);
+        Assert.Contains("não configurado", result.Error.Message);
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class LoginCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Contains("não configurado", result.Error.Description);
+        Assert.Contains("não configurado", result.Error.Message);
     }
 
     [Fact]

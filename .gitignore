@@ -31,3 +31,5 @@ Thumbs.db
 coverage/
 TestResults/
 docs/DEPLOY_SECRETS_LOCAL_ONLY.txt
+frontend/budgetcouple-web/playwright-report/
+frontend/budgetcouple-web/test-results/

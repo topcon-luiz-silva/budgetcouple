@@ -75,7 +75,7 @@ public class ChangePinCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Contains("PIN atual incorreto", result.Error.Description);
+        Assert.Contains("PIN atual incorreto", result.Error.Message);
         _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -94,7 +94,7 @@ public class ChangePinCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Contains("não encontrada", result.Error.Description);
+        Assert.Contains("não encontrada", result.Error.Message);
     }
 
     [Fact]

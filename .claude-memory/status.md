@@ -103,6 +103,26 @@ Validação end-to-end via agente. Gap CRITICAL encontrado e corrigido: `Error.F
 - ⏳ Fase 4 — Lançamentos (núcleo: simples, parcelado, recorrente, pagar, realizar)
 - ⏳ Fases 5-12 pendentes
 
+## Deploy em Produção (2026-04-14)
+
+**Status:** ✅ Backend e Frontend LIVE em produção.
+
+- **Backend:** Render.com, Docker, plano Free (com cold-start). URL: https://budgetcouple-api.onrender.com — /health retorna HTTP 200. Service ID: `srv-d7fdbc7aqgkc739o8gtg`. Último deploy ok: commit `276be99`.
+- **Frontend:** Vercel. URL: https://budgetcouple-eight.vercel.app — HTTP 200. Último deploy ok: commit `32a5795`. Root Directory: `frontend/budgetcouple-web`.
+- **Banco:** Supabase (Postgres Session Pooler), migrations aplicadas no startup resiliente.
+- **GitHub:** https://github.com/topcon-luiz-silva/budgetcouple (main).
+
+### Correções necessárias durante o deploy
+1. `LancamentoAnexoRepository.cs`: using `BudgetCouple.Application.Common.Interfaces.Accounting;` (não o namespace genérico).
+2. `BackupService.cs`: add `using Microsoft.EntityFrameworkCore;` e trocar `using var transaction` por `await using var transaction` (ITransaction é IAsyncDisposable).
+3. `LancamentoAnexosController.cs`: add `using BudgetCouple.Application.Common.Interfaces;` para `IAttachmentStorage`.
+4. Vercel Project Settings → Root Directory: `frontend/budgetcouple-web` (o projeto não está na raiz do repo).
+5. `frontend/budgetcouple-web/vercel.json`: remover bloco `"env": { "VITE_API_URL": "@vite_api_url" }` — usar env var definida direto em Project Settings → Environment Variables (VITE_API_URL=https://budgetcouple-api.onrender.com).
+
+### Monitoramento
+- ✅ UptimeRobot configurado: HTTP(s) monitor em https://budgetcouple-api.onrender.com/health a cada 5 min (evita cold-start do Render Free).
+
+
 ## Como retomar em sessão futura
 1. `cd "/home/luiz-felipe/Documentos/Claude/Projects/Aplicativo de Finanças/budgetcouple/"`
 2. Ler `.claude-memory/project.md` + este arquivo + `docs/PRD-App-Despesas-Pessoais.md`
