@@ -20,8 +20,11 @@ public class PdfGenerator : IPdfGenerator
                 page.Margin(20);
 
                 // Header
-                page.Header().Text("Relatório de Lançamentos").FontSize(20).Bold();
-                page.Header().Text($"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm:ss}").FontSize(10);
+                page.Header().Column(col =>
+                {
+                    col.Item().Text("Relatório de Lançamentos").FontSize(20).Bold();
+                    col.Item().Text($"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm:ss}").FontSize(10);
+                });
 
                 // Content
                 page.Content().Table(table =>
@@ -85,10 +88,13 @@ public class PdfGenerator : IPdfGenerator
                 page.Margin(20);
 
                 // Header
-                page.Header().Text($"BudgetCouple - Dashboard {dashboard.Competencia}")
-                    .FontSize(20).Bold();
-                page.Header().Text($"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm:ss}")
-                    .FontSize(10);
+                page.Header().Column(col =>
+                {
+                    col.Item().Text($"BudgetCouple - Dashboard {dashboard.Competencia}")
+                        .FontSize(20).Bold();
+                    col.Item().Text($"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm:ss}")
+                        .FontSize(10);
+                });
 
                 page.Content().Column(col =>
                 {
