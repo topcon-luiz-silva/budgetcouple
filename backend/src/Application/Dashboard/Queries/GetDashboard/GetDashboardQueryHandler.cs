@@ -79,19 +79,29 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
         var lancamentosRealizados = lancamentos.Where(l => l.Natureza == NaturezaLancamento.REALIZADA).ToList();
         var lancamentosPrevistos = lancamentos.Where(l => l.Natureza == NaturezaLancamento.PREVISTA).ToList();
 
-        var totalReceitasRealizadas = lancamentosRealizados
+        // Lançamentos para cálculo de P&L (receitas/despesas/categorias/evolução).
+        // Exclui pagamentos de fatura: a despesa já foi reconhecida no mês da compra do cartão.
+        // O pagamento de fatura é apenas baixa de passivo, não é despesa nova.
+        var lancamentosRealizadosParaPnL = lancamentosRealizados
+            .Where(l => !l.Tags.Contains("__PAGAMENTO_FATURA__"))
+            .ToList();
+        var lancamentosPrevistosParaPnL = lancamentosPrevistos
+            .Where(l => !l.Tags.Contains("__PAGAMENTO_FATURA__"))
+            .ToList();
+
+        var totalReceitasRealizadas = lancamentosRealizadosParaPnL
             .Where(l => l.Tipo == TipoLancamento.RECEITA)
             .Sum(l => l.Valor);
 
-        var totalDespesasRealizadas = lancamentosRealizados
+        var totalDespesasRealizadas = lancamentosRealizadosParaPnL
             .Where(l => l.Tipo == TipoLancamento.DESPESA)
             .Sum(l => l.Valor);
 
-        var totalReceitasPrevistas = lancamentosPrevistos
+        var totalReceitasPrevistas = lancamentosPrevistosParaPnL
             .Where(l => l.Tipo == TipoLancamento.RECEITA)
             .Sum(l => l.Valor);
 
-        var totalDespesasPrevistas = lancamentosPrevistos
+        var totalDespesasPrevistas = lancamentosPrevistosParaPnL
             .Where(l => l.Tipo == TipoLancamento.DESPESA)
             .Sum(l => l.Valor);
 
@@ -119,8 +129,8 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             totalDespesasPrevistas,
             saldoConsolidadoContas);
 
-        // Calculate PorCategoria (TOP despesas)
-        var porCategoria = lancamentosRealizados
+        // Calculate PorCategoria (TOP despesas) — exclui pagamento de fatura (não é despesa nova)
+        var porCategoria = lancamentosRealizadosParaPnL
             .GroupBy(l => l.CategoriaId)
             .Select(g =>
             {
@@ -186,7 +196,9 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             var fim = inicio.AddMonths(1).AddDays(-1);
 
             var lancamentosMes = lancamentos
-                .Where(l => l.Data >= inicio && l.Data <= fim && l.Natureza == NaturezaLancamento.REALIZADA)
+                .Where(l => l.Data >= inicio && l.Data <= fim
+                         && l.Natureza == NaturezaLancamento.REALIZADA
+                         && !l.Tags.Contains("__PAGAMENTO_FATURA__"))
                 .ToList();
 
             var receitas = lancamentosMes.Where(l => l.Tipo == TipoLancamento.RECEITA).Sum(l => l.Valor);

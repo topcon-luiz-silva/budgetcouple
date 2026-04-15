@@ -97,6 +97,13 @@ public class PagarFaturaCommandHandler : IRequestHandler<PagarFaturaCommand, Res
         // Mark payment as paid immediately
         lancamentoPagamento.Value.Pagar(dataPagamento, contaDebito);
 
+        // Marcar como pagamento de fatura para que dashboard não conte como despesa nova
+        // (a despesa já foi reconhecida no mês de competência das compras originais).
+        // O lançamento continua afetando saldo da conta (é débito real), mas não entra
+        // no total de despesas nem nas agregações por categoria/evolução.
+        if (!lancamentoPagamento.Value.Tags.Contains("__PAGAMENTO_FATURA__"))
+            lancamentoPagamento.Value.Tags.Add("__PAGAMENTO_FATURA__");
+
         // Add payment transaction
         _lancamentoRepository.Add(lancamentoPagamento.Value);
 
