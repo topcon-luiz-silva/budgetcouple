@@ -57,12 +57,13 @@ public class CreateLancamentoParceladoCommandHandler : IRequestHandler<CreateLan
             cartaoNome = cartao.Nome;
         }
 
-        // Parse enums
-        if (!Enum.TryParse<NaturezaLancamento>(request.NaturezaLancamento, out var natureza))
-            return Result.Failure<List<LancamentoDto>>(Error.Validation("Natureza do lançamento inválida"));
+        // Map request.NaturezaLancamento (RECEITA|DESPESA|TRANSFERENCIA) → TipoLancamento
+        var tipo = request.NaturezaLancamento == "RECEITA"
+            ? TipoLancamento.RECEITA
+            : TipoLancamento.DESPESA;
 
-        // Create lancamentos
-        var tipo = request.NaturezaLancamento == "RECEITA" ? TipoLancamento.RECEITA : TipoLancamento.DESPESA;
+        // Parcelados são sempre PREVISTA (previstos para os próximos meses)
+        var natureza = NaturezaLancamento.PREVISTA;
         var result = Lancamento.CriarParcelado(
             tipo,
             natureza,

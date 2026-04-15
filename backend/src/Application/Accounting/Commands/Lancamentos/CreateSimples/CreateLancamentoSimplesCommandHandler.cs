@@ -57,15 +57,16 @@ public class CreateLancamentoSimplesCommandHandler : IRequestHandler<CreateLanca
             cartaoNome = cartao.Nome;
         }
 
-        // Parse enums
-        if (!Enum.TryParse<NaturezaLancamento>(request.NaturezaLancamento, out var natureza))
-            return Result.Failure<LancamentoDto>(Error.Validation("Natureza do lançamento inválida"));
+        // Map request.NaturezaLancamento (RECEITA|DESPESA|TRANSFERENCIA) → TipoLancamento
+        var tipo = request.NaturezaLancamento == "RECEITA"
+            ? TipoLancamento.RECEITA
+            : TipoLancamento.DESPESA;
 
-        if (!Enum.TryParse<StatusPagamento>(request.StatusPagamento, out var status))
-            return Result.Failure<LancamentoDto>(Error.Validation("Status de pagamento inválido"));
+        // Map request.StatusPagamento (PREVISTO|REALIZADO|ATRASADO) → NaturezaLancamento (PREVISTA|REALIZADA)
+        var natureza = request.StatusPagamento == "REALIZADO"
+            ? NaturezaLancamento.REALIZADA
+            : NaturezaLancamento.PREVISTA;
 
-        // Create lancamento
-        var tipo = request.NaturezaLancamento == "RECEITA" ? TipoLancamento.RECEITA : TipoLancamento.DESPESA;
         var result = Lancamento.CriarSimples(
             tipo,
             natureza,
@@ -88,8 +89,8 @@ public class CreateLancamentoSimplesCommandHandler : IRequestHandler<CreateLanca
             lancamento.Tags.AddRange(request.Tags);
         }
 
-        // If REALIZADO, update status
-        if (status == StatusPagamento.PAGO)
+        // If REALIZADO, mark as paid
+        if (request.StatusPagamento == "REALIZADO")
         {
             var pagtoResult = lancamento.Pagar(request.DataCompetencia, request.ContaId ?? request.CartaoId);
             if (!pagtoResult.IsSuccess)

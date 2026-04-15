@@ -66,7 +66,8 @@ public class CreateRecorrenciaCommandHandler : IRequestHandler<CreateRecorrencia
         if (!Enum.TryParse<FrequenciaRecorrencia>(request.Frequencia, out var frequencia))
             return Result.Failure<CreateRecorrenciaResponse>(Error.Validation("Frequência inválida"));
 
-        if (!Enum.TryParse<NaturezaLancamento>(request.NaturezaLancamento, out var natureza))
+        // request.NaturezaLancamento é RECEITA|DESPESA|TRANSFERENCIA; recorrências começam como PREVISTA
+        if (!new[] { "RECEITA", "DESPESA", "TRANSFERENCIA" }.Contains(request.NaturezaLancamento))
             return Result.Failure<CreateRecorrenciaResponse>(Error.Validation("Natureza do lançamento inválida"));
 
         // Create template JSON
@@ -103,7 +104,7 @@ public class CreateRecorrenciaCommandHandler : IRequestHandler<CreateRecorrencia
         {
             var lancResult = Lancamento.CriarRecorrenciaOcorrencia(
                 tipo,
-                natureza,
+                NaturezaLancamento.PREVISTA,
                 request.ValorBase,
                 snapshot.DataOcorrencia,
                 request.CategoriaId,

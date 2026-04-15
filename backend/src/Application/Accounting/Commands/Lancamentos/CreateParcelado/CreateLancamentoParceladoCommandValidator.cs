@@ -22,7 +22,7 @@ public class CreateLancamentoParceladoCommandValidator : AbstractValidator<Creat
 
         RuleFor(x => x.NaturezaLancamento)
             .NotEmpty().WithMessage("Natureza do lançamento é obrigatória")
-            .Must(n => new[] { "PREVISTA", "REALIZADA" }.Contains(n))
+            .Must(n => new[] { "RECEITA", "DESPESA", "TRANSFERENCIA" }.Contains(n))
             .WithMessage("Natureza do lançamento inválida");
 
         RuleFor(x => x)
@@ -31,10 +31,9 @@ public class CreateLancamentoParceladoCommandValidator : AbstractValidator<Creat
                 var ambosNull = !x.ContaId.HasValue && !x.CartaoId.HasValue;
                 var ambosPresentes = x.ContaId.HasValue && x.CartaoId.HasValue;
 
-                if (x.NaturezaLancamento == "REALIZADA")
+                if (ambosNull)
                 {
-                    if (ambosNull || ambosPresentes)
-                        context.AddFailure("Lançamento realizado deve ter conta OU cartão, mas não ambos ou nenhum");
+                    context.AddFailure("Lançamento parcelado deve ter conta OU cartão");
                 }
                 else if (ambosPresentes)
                 {
