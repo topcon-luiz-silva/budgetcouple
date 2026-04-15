@@ -17,4 +17,4 @@ public record CreateRecorrenciaCommand(
     Guid? SubcategoriaId,
     List<string>? Tags,
     string? Observacoes,
-    DateOnly? GerarOcorrenciasAte) : IRequest<Result<(RecorrenciaDto recorrencia, List<LancamentoDto> lancamentos)>>;
+    DateOnly? GerarOcorrenciasAte) : IRequest<Result<CreateRecorrenciaResponse>>;

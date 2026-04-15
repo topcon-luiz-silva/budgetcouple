@@ -99,7 +99,7 @@ public class LancamentosController : ControllerBase
     }
 
     [HttpPost("recorrencia")]
-    public async Task<ActionResult<(RecorrenciaDto, List<LancamentoDto>)>> CreateRecorrencia([FromBody] CreateRecorrenciaRequest request)
+    public async Task<ActionResult<CreateRecorrenciaResponse>> CreateRecorrencia([FromBody] CreateRecorrenciaRequest request)
     {
         var command = new CreateRecorrenciaCommand(
             request.DescricaoBase,

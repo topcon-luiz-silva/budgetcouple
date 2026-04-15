@@ -34,8 +34,11 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
             {
                 // Result<T> case
                 var valueType = typeof(TResponse).GetGenericArguments()[0];
+                // Use GetMethods() and filter by generic to avoid AmbiguousMatchException
+                // (Result has both `Failure(Error)` and `Failure<T>(Error)`)
                 var failureMethod = typeof(Result)
-                    .GetMethod("Failure", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)?
+                    .GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                    .First(m => m.Name == "Failure" && m.IsGenericMethodDefinition)
                     .MakeGenericMethod(valueType);
 
                 var error = Error.Validation(string.Join(", ", failures.Select(f => f.ErrorMessage)));

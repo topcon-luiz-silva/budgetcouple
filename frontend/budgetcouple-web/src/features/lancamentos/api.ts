@@ -1,4 +1,5 @@
 import { api } from '@/lib/api'
+import { z } from 'zod'
 import type {
   Lancamento,
   ListaLancamentosResponse,
@@ -7,6 +8,68 @@ import type {
   LancamentoRecorrenteFormData,
   Recorrencia,
 } from './types'
+
+// Response Validation Schemas
+const lancamentoSchema = z.object({
+  id: z.string(),
+  descricao: z.string(),
+  valor: z.number(),
+  dataCompetencia: z.string(),
+  dataVencimento: z.string().optional(),
+  dataPagamento: z.string().optional(),
+  naturezaLancamento: z.enum(['DESPESA', 'RECEITA', 'TRANSFERENCIA']),
+  statusPagamento: z.enum(['PREVISTO', 'REALIZADO', 'ATRASADO']),
+  contaId: z.string().optional(),
+  cartaoId: z.string().optional(),
+  categoriaId: z.string(),
+  subcategoriaId: z.string().optional(),
+  tags: z.array(z.string()).default([]),
+  observacoes: z.string().optional(),
+  parceladoId: z.string().optional(),
+  recorrenciaId: z.string().optional(),
+  numeroMês: z.number().optional(),
+  totalMeses: z.number().optional(),
+  criadoEm: z.string(),
+  atualizadoEm: z.string(),
+})
+
+const listaLancamentosResponseSchema = z.object({
+  items: z.array(lancamentoSchema),
+  total: z.number(),
+  skip: z.number(),
+  take: z.number(),
+})
+
+const recorrenciaSchema = z.object({
+  id: z.string(),
+  descricaoBase: z.string(),
+  valorBase: z.number(),
+  frequencia: z.enum(['DIARIA', 'SEMANAL', 'QUINZENAL', 'MENSAL', 'TRIMESTRAL', 'SEMESTRAL', 'ANUAL']),
+  dataInicio: z.string(),
+  dataFim: z.string().optional(),
+  naturezaLancamento: z.enum(['DESPESA', 'RECEITA', 'TRANSFERENCIA']),
+  contaId: z.string().optional(),
+  cartaoId: z.string().optional(),
+  categoriaId: z.string(),
+  subcategoriaId: z.string().optional(),
+  tags: z.array(z.string()).default([]),
+  observacoes: z.string().optional(),
+  ativa: z.boolean(),
+  criadoEm: z.string(),
+  atualizadoEm: z.string(),
+})
+
+function validateResponse<T>(data: unknown, schema: z.ZodSchema<T>, context: string): T {
+  try {
+    return schema.parse(data)
+  } catch (error) {
+    const message = error instanceof z.ZodError 
+      ? `${context}: ${error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`
+      : `${context}: validation failed`
+    console.warn(`[Contract Test Warning] ${message}`)
+    throw new Error(`API response validation failed: ${message}`)
+  }
+}
 
 export interface ListaLancamentosParams {
   dataInicio?: string
@@ -24,32 +87,32 @@ export interface ListaLancamentosParams {
 export const lancamentosApi = {
   list: async (params: ListaLancamentosParams): Promise<ListaLancamentosResponse> => {
     const { data } = await api.get<ListaLancamentosResponse>('/lancamentos', { params })
-    return data
+    return validateResponse(data, listaLancamentosResponseSchema, 'lancamentosApi.list')
   },
 
   getById: async (id: string): Promise<Lancamento> => {
     const { data } = await api.get<Lancamento>(`/lancamentos/${id}`)
-    return data
+    return validateResponse(data, lancamentoSchema, `lancamentosApi.getById(${id})`)
   },
 
   createSimples: async (input: LancamentoSimplesFormData): Promise<Lancamento> => {
     const { data } = await api.post<Lancamento>('/lancamentos/simples', input)
-    return data
+    return validateResponse(data, lancamentoSchema, 'lancamentosApi.createSimples')
   },
 
   createParcelado: async (input: LancamentoParceladoFormData): Promise<Lancamento> => {
     const { data } = await api.post<Lancamento>('/lancamentos/parcelado', input)
-    return data
+    return validateResponse(data, lancamentoSchema, 'lancamentosApi.createParcelado')
   },
 
   createRecorrencia: async (input: LancamentoRecorrenteFormData): Promise<Recorrencia> => {
     const { data } = await api.post<Recorrencia>('/lancamentos/recorrencia', input)
-    return data
+    return validateResponse(data, recorrenciaSchema, 'lancamentosApi.createRecorrencia')
   },
 
   update: async (id: string, input: LancamentoSimplesFormData): Promise<Lancamento> => {
     const { data } = await api.put<Lancamento>(`/lancamentos/${id}`, input)
-    return data
+    return validateResponse(data, lancamentoSchema, `lancamentosApi.update(${id})`)
   },
 
   delete: async (id: string, escopo: 'one' | 'fromHere' | 'all' = 'one'): Promise<void> => {
@@ -61,23 +124,23 @@ export const lancamentosApi = {
       dataPagamento,
       contaDebitoId,
     })
-    return data
+    return validateResponse(data, lancamentoSchema, `lancamentosApi.pagar(${id})`)
   },
 
   // Recorrências
   listRecorrencias: async (): Promise<Recorrencia[]> => {
     const { data } = await api.get<Recorrencia[]>('/recorrencias')
-    return data
+    return validateResponse(data, z.array(recorrenciaSchema), 'lancamentosApi.listRecorrencias')
   },
 
   getRecorrenciaById: async (id: string): Promise<Recorrencia> => {
     const { data } = await api.get<Recorrencia>(`/recorrencias/${id}`)
-    return data
+    return validateResponse(data, recorrenciaSchema, `lancamentosApi.getRecorrenciaById(${id})`)
   },
 
   updateRecorrencia: async (id: string, input: LancamentoRecorrenteFormData): Promise<Recorrencia> => {
     const { data } = await api.put<Recorrencia>(`/recorrencias/${id}`, input)
-    return data
+    return validateResponse(data, recorrenciaSchema, `lancamentosApi.updateRecorrencia(${id})`)
   },
 
   deleteRecorrencia: async (id: string): Promise<void> => {
@@ -86,6 +149,6 @@ export const lancamentosApi = {
 
   gerarOcorrenciasRecorrencia: async (id: string, ate: string): Promise<Lancamento[]> => {
     const { data } = await api.post<Lancamento[]>(`/recorrencias/${id}/gerar-ocorrencias`, { ate })
-    return data
+    return validateResponse(data, z.array(lancamentoSchema), `lancamentosApi.gerarOcorrenciasRecorrencia(${id})`)
   },
 }

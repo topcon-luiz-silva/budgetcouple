@@ -10,7 +10,7 @@ using BudgetCouple.Domain.Common;
 using MediatR;
 using System.Text.Json;
 
-public class CreateRecorrenciaCommandHandler : IRequestHandler<CreateRecorrenciaCommand, Result<(RecorrenciaDto recorrencia, List<LancamentoDto> lancamentos)>>
+public class CreateRecorrenciaCommandHandler : IRequestHandler<CreateRecorrenciaCommand, Result<CreateRecorrenciaResponse>>
 {
     private readonly IRecorrenciaRepository _recorrenciaRepository;
     private readonly ILancamentoRepository _lancamentoRepository;
@@ -35,12 +35,12 @@ public class CreateRecorrenciaCommandHandler : IRequestHandler<CreateRecorrencia
         _dbContext = dbContext;
     }
 
-    public async Task<Result<(RecorrenciaDto recorrencia, List<LancamentoDto> lancamentos)>> Handle(CreateRecorrenciaCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CreateRecorrenciaResponse>> Handle(CreateRecorrenciaCommand request, CancellationToken cancellationToken)
     {
         // Validate categoria exists
         var categoria = await _categoriaRepository.GetByIdAsync(request.CategoriaId, cancellationToken);
         if (categoria == null)
-            return Result.Failure<(RecorrenciaDto, List<LancamentoDto>)>(Error.NotFound($"Categoria com ID {request.CategoriaId} não encontrada"));
+            return Result.Failure<CreateRecorrenciaResponse>(Error.NotFound($"Categoria com ID {request.CategoriaId} não encontrada"));
 
         // Validate conta exists if provided
         string? contaNome = null;
@@ -48,7 +48,7 @@ public class CreateRecorrenciaCommandHandler : IRequestHandler<CreateRecorrencia
         {
             var conta = await _contaRepository.GetByIdAsync(request.ContaId.Value, cancellationToken);
             if (conta == null)
-                return Result.Failure<(RecorrenciaDto, List<LancamentoDto>)>(Error.NotFound($"Conta com ID {request.ContaId} não encontrada"));
+                return Result.Failure<CreateRecorrenciaResponse>(Error.NotFound($"Conta com ID {request.ContaId} não encontrada"));
             contaNome = conta.Nome;
         }
 
@@ -58,16 +58,16 @@ public class CreateRecorrenciaCommandHandler : IRequestHandler<CreateRecorrencia
         {
             var cartao = await _cartaoRepository.GetByIdAsync(request.CartaoId.Value, cancellationToken);
             if (cartao == null)
-                return Result.Failure<(RecorrenciaDto, List<LancamentoDto>)>(Error.NotFound($"Cartão com ID {request.CartaoId} não encontrada"));
+                return Result.Failure<CreateRecorrenciaResponse>(Error.NotFound($"Cartão com ID {request.CartaoId} não encontrada"));
             cartaoNome = cartao.Nome;
         }
 
         // Parse enums
         if (!Enum.TryParse<FrequenciaRecorrencia>(request.Frequencia, out var frequencia))
-            return Result.Failure<(RecorrenciaDto, List<LancamentoDto>)>(Error.Validation("Frequência inválida"));
+            return Result.Failure<CreateRecorrenciaResponse>(Error.Validation("Frequência inválida"));
 
         if (!Enum.TryParse<NaturezaLancamento>(request.NaturezaLancamento, out var natureza))
-            return Result.Failure<(RecorrenciaDto, List<LancamentoDto>)>(Error.Validation("Natureza do lançamento inválida"));
+            return Result.Failure<CreateRecorrenciaResponse>(Error.Validation("Natureza do lançamento inválida"));
 
         // Create template JSON
         var template = new
@@ -87,7 +87,7 @@ public class CreateRecorrenciaCommandHandler : IRequestHandler<CreateRecorrencia
         // Create recorrencia
         var recorrenciaResult = Recorrencia.Create(frequencia, request.DataInicio, request.DataFim, templateJson);
         if (!recorrenciaResult.IsSuccess)
-            return Result.Failure<(RecorrenciaDto, List<LancamentoDto>)>(recorrenciaResult.Error);
+            return Result.Failure<CreateRecorrenciaResponse>(recorrenciaResult.Error);
 
         var recorrencia = recorrenciaResult.Value;
         _recorrenciaRepository.Add(recorrencia);
@@ -128,6 +128,6 @@ public class CreateRecorrenciaCommandHandler : IRequestHandler<CreateRecorrencia
         var recorrenciaDto = RecorrenciaDto.FromDomain(recorrencia);
         var lancamentosDto = lancamentos.Select(l => LancamentoDto.FromDomain(l, contaNome, cartaoNome, categoria.Nome)).ToList();
 
-        return Result.Success((recorrenciaDto, lancamentosDto));
+        return Result.Success(new CreateRecorrenciaResponse(recorrenciaDto, lancamentosDto));
     }
 }
