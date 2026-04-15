@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogB
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { useCategoriasList, useDeleteCategoria } from '../hooks'
+import { CategoriaIcon } from '../CategoriaIcon'
 import type { TipoCategoria } from '../types'
 import { AxiosError } from 'axios'
 
@@ -114,7 +115,7 @@ export function CategoriasListPage() {
                       {tipoCategoriaLabels[categoria.tipoCategoria]}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-lg">{categoria.icone}</TableCell>
+                  <TableCell><CategoriaIcon name={categoria.icone} size={22} /></TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Link to={`/categorias/${categoria.id}/editar`}>

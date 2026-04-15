@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft } from 'lucide-react'
+import { CategoriaIcon } from '../CategoriaIcon'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -20,7 +21,12 @@ const tipoCategoriaLabels: Record<TipoCategoria, string> = {
   RECEITA: 'Receita',
 }
 
-const ÍCONES_DISPONÍVEIS = ['💸', '🛒', '🍔', '🏠', '🚗', '💊', '📚', '🎬', '🎮', '⚽']
+const ÍCONES_DISPONÍVEIS = [
+  'home', 'utensils', 'car', 'heart-pulse', 'graduation-cap',
+  'film', 'repeat', 'shirt', 'paw-print', 'gift',
+  'receipt', 'landmark', 'wallet', 'award', 'trending-up',
+  'briefcase', 'credit-card', 'shopping-cart', 'more-horizontal', 'tag',
+]
 
 export function CategoriaFormPage() {
   const { t } = useTranslation()
@@ -209,13 +215,15 @@ export function CategoriaFormPage() {
                         input.dispatchEvent(event)
                       }
                     }}
-                    className={`text-3xl p-2 rounded-md border-2 transition-colors ${
+                    className={`p-3 rounded-md border-2 transition-colors ${
                       watch('icone') === icon
                         ? 'border-slate-900 bg-slate-100'
                         : 'border-slate-300 hover:border-slate-400'
                     }`}
+                    aria-label={icon}
+                    title={icon}
                   >
-                    {icon}
+                    <CategoriaIcon name={icon} size={22} />
                   </button>
                 ))}
               </div>
