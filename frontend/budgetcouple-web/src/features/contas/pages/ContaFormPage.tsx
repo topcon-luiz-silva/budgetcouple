@@ -43,11 +43,21 @@ export function ContaFormPage() {
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm<any>({
     resolver: zodResolver(contaFormSchema),
+    defaultValues: {
+      nome: '',
+      tipoConta: '',
+      saldoInicial: 0,
+      corHex: '#3b82f6',
+      icone: '💰',
+      observacoes: '',
+    },
   })
 
   const corHex = watch('corHex')
+  const iconeAtual = watch('icone')
 
   useEffect(() => {
     if (contaExistente) {
@@ -197,16 +207,9 @@ export function ContaFormPage() {
                   <button
                     key={icon}
                     type="button"
-                    onClick={() => {
-                      const event = new Event('change', { bubbles: true })
-                      const input = document.getElementById('icone') as HTMLInputElement
-                      if (input) {
-                        input.value = icon
-                        input.dispatchEvent(event)
-                      }
-                    }}
+                    onClick={() => setValue('icone', icon, { shouldValidate: true, shouldDirty: true })}
                     className={`text-3xl p-2 rounded-md border-2 transition-colors ${
-                      watch('icone') === icon
+                      iconeAtual === icon
                         ? 'border-slate-900 bg-slate-100'
                         : 'border-slate-300 hover:border-slate-400'
                     }`}
@@ -215,11 +218,9 @@ export function ContaFormPage() {
                   </button>
                 ))}
               </div>
-              <Input
-                id="icone"
+              <input
+                type="hidden"
                 {...register('icone')}
-                className="hidden"
-                aria-invalid={!!errors.icone}
               />
               {errors.icone && (
                 <p className="text-sm text-red-600">{errors.icone.message as string}</p>

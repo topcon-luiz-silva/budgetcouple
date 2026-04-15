@@ -64,6 +64,33 @@ export function DashboardPage() {
 
   const monthLabel = format(currentDate, "MMMM'/'yyyy", { locale: ptBR })
 
+  // Cores para o gráfico de pizza
+  const COLORS = [
+    '#3b82f6',
+    '#ef4444',
+    '#10b981',
+    '#f59e0b',
+    '#8b5cf6',
+    '#ec4899',
+    '#14b8a6',
+    '#f97316',
+  ]
+
+  // IMPORTANT: all hooks must run before any early return.
+  const chartData = useMemo(
+    () =>
+      (dashboard?.porCategoria ?? [])
+        .slice()
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 8)
+        .map((item) => ({
+          name: item.categoriaNome,
+          value: item.total,
+          color: item.corHex || '#94a3b8',
+        })),
+    [dashboard?.porCategoria]
+  )
+
   if (error) {
     return (
       <Alert variant="destructive">
@@ -83,31 +110,6 @@ export function DashboardPage() {
       </div>
     )
   }
-
-  // Cores para o gráfico de pizza
-  const COLORS = [
-    '#3b82f6',
-    '#ef4444',
-    '#10b981',
-    '#f59e0b',
-    '#8b5cf6',
-    '#ec4899',
-    '#14b8a6',
-    '#f97316',
-  ]
-
-  const chartData = useMemo(
-    () =>
-      dashboard.porCategoria
-        .sort((a, b) => b.total - a.total)
-        .slice(0, 8)
-        .map((item) => ({
-          name: item.categoriaNome,
-          value: item.total,
-          color: item.corHex || '#94a3b8',
-        })),
-    [dashboard.porCategoria]
-  )
 
   return (
     <div className="space-y-6">
