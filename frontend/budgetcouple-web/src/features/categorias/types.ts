@@ -16,6 +16,8 @@ export interface Categoria {
   parentCategoriaId?: string
   criadoEm: string
   atualizadoEm: string
+  sistema?: boolean
+  ativa?: boolean
 }
 
 export const categoriaFormSchema = z.object({

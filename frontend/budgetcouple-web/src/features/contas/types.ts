@@ -1,11 +1,10 @@
 import { z } from 'zod'
 
 export const TipoConta = {
-  CORRENTE: 'CORRENTE',
+  CONTA_CORRENTE: 'CONTA_CORRENTE',
   POUPANCA: 'POUPANCA',
   INVESTIMENTO: 'INVESTIMENTO',
   CARTEIRA: 'CARTEIRA',
-  OUTRA: 'OUTRA',
 } as const
 
 export type TipoConta = typeof TipoConta[keyof typeof TipoConta]
@@ -20,11 +19,13 @@ export interface Conta {
   observacoes?: string
   criadoEm: string
   atualizadoEm: string
+  saldoAtual?: number
+  ativa?: boolean
 }
 
 export const contaFormSchema = z.object({
   nome: z.string().min(2, 'Nome deve ter no mínimo 2 caracteres').max(100),
-  tipoConta: z.enum(['CORRENTE', 'POUPANCA', 'INVESTIMENTO', 'CARTEIRA', 'OUTRA']),
+  tipoConta: z.enum(['CONTA_CORRENTE', 'POUPANCA', 'INVESTIMENTO', 'CARTEIRA']),
   saldoInicial: z.union([z.number(), z.string()]).pipe(z.coerce.number()),
   corHex: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Cor deve ser um hexadecimal válido'),
   icone: z.string().min(1, 'Ícone é obrigatório'),

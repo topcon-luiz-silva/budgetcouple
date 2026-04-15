@@ -2,18 +2,18 @@ import { api } from '@/lib/api'
 import { z } from 'zod'
 import type { Conta, ContaFormData } from './types'
 
-// Response Validation Schema
+// Response Validation Schema - with passthrough to allow extra fields from backend
 const contaSchema = z.object({
   id: z.string(),
   nome: z.string(),
-  tipoConta: z.enum(['CORRENTE', 'POUPANCA', 'INVESTIMENTO', 'CARTEIRA', 'OUTRA']),
+  tipoConta: z.enum(['CONTA_CORRENTE', 'POUPANCA', 'INVESTIMENTO', 'CARTEIRA']),
   saldoInicial: z.number(),
   corHex: z.string(),
   icone: z.string(),
   observacoes: z.string().optional(),
   criadoEm: z.string(),
   atualizadoEm: z.string(),
-})
+}).passthrough()
 
 function validateResponse<T>(data: unknown, schema: z.ZodSchema<T>, context: string): T {
   try {

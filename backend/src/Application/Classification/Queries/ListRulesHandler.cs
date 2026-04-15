@@ -28,9 +28,7 @@ public class ListRulesHandler : IRequestHandler<ListRulesQuery, Result<List<Regr
             var categorias = await dbContext.Set<BudgetCouple.Domain.Accounting.Categorias.Categoria>()
                 .ToListAsync(cancellationToken);
 
-            var subcategorias = await dbContext.Set<BudgetCouple.Domain.Accounting.Categorias.Subcategoria>()
-                .ToListAsync(cancellationToken);
-
+            // Map regras to DTOs - Subcategoria is an owned type, so we don't need to query it separately
             var dtos = rules.Select(r => new RegraClassificacaoDto
             {
                 Id = r.Id,
@@ -40,9 +38,7 @@ public class ListRulesHandler : IRequestHandler<ListRulesQuery, Result<List<Regr
                 CategoriaId = r.CategoriaId,
                 CategoriaNome = categorias.FirstOrDefault(c => c.Id == r.CategoriaId)?.Nome,
                 SubcategoriaId = r.SubcategoriaId,
-                SubcategoriaNome = r.SubcategoriaId.HasValue
-                    ? subcategorias.FirstOrDefault(sc => sc.Id == r.SubcategoriaId)?.Nome
-                    : null,
+                SubcategoriaNome = null, // Subcategoria is owned by Categoria, can't be queried separately
                 Prioridade = r.Prioridade,
                 Ativa = r.Ativa,
                 CriadoEm = r.CriadoEm,

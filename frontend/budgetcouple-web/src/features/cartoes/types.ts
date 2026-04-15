@@ -13,6 +13,7 @@ export interface Cartao {
   icone: string
   criadoEm: string
   atualizadoEm: string
+  ativa?: boolean
 }
 
 export const cartaoFormSchema = z.object({

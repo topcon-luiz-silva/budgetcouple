@@ -2,7 +2,7 @@ import { api } from '@/lib/api'
 import { z } from 'zod'
 import type { Categoria, CategoriaFormData } from './types'
 
-// Response Validation Schema
+// Response Validation Schema - with passthrough to allow extra fields from backend
 const categoriaSchema = z.object({
   id: z.string(),
   nome: z.string(),
@@ -12,7 +12,7 @@ const categoriaSchema = z.object({
   parentCategoriaId: z.string().optional(),
   criadoEm: z.string(),
   atualizadoEm: z.string(),
-})
+}).passthrough()
 
 function validateResponse<T>(data: unknown, schema: z.ZodSchema<T>, context: string): T {
   try {

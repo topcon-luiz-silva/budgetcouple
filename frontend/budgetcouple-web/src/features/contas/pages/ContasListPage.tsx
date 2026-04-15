@@ -12,11 +12,10 @@ import type { TipoConta } from '../types'
 import { AxiosError } from 'axios'
 
 const tipoContaLabels: Record<TipoConta, string> = {
-  CORRENTE: 'Corrente',
+  CONTA_CORRENTE: 'Corrente',
   POUPANCA: 'Poupança',
   INVESTIMENTO: 'Investimento',
   CARTEIRA: 'Carteira',
-  OUTRA: 'Outra',
 }
 
 export function ContasListPage() {

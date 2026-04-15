@@ -2,7 +2,7 @@ import { api } from '@/lib/api'
 import { z } from 'zod'
 import type { Cartao, CartaoFormData } from './types'
 
-// Response Validation Schema
+// Response Validation Schema - with passthrough to allow extra fields from backend
 const cartaoSchema = z.object({
   id: z.string(),
   nome: z.string(),
@@ -16,7 +16,7 @@ const cartaoSchema = z.object({
   icone: z.string(),
   criadoEm: z.string(),
   atualizadoEm: z.string(),
-})
+}).passthrough()
 
 function validateResponse<T>(data: unknown, schema: z.ZodSchema<T>, context: string): T {
   try {
