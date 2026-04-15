@@ -27,8 +27,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
     };
   }
 
-  componentDidCatch(error: Error) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error);
+    console.error('Stack:', error.stack);
+    console.error('Component stack:', errorInfo.componentStack);
   }
 
   resetError = () => {
@@ -52,7 +54,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
             <p className="text-gray-600 text-center mb-4">
               Desculpe, ocorreu um erro inesperado. Por favor, tente novamente.
             </p>
-            {import.meta.env.DEV && this.state.error && (
+            {this.state.error && (
               <details className="mb-4 text-xs bg-gray-100 p-2 rounded border border-gray-300">
                 <summary className="font-semibold text-gray-700 cursor-pointer">
                   Detalhes do erro

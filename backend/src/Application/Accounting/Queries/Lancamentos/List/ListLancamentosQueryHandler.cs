@@ -5,7 +5,7 @@ using BudgetCouple.Application.Common.Interfaces.Accounting;
 using BudgetCouple.Domain.Common;
 using MediatR;
 
-public class ListLancamentosQueryHandler : IRequestHandler<ListLancamentosQuery, Result<(List<LancamentoDto>, int)>>
+public class ListLancamentosQueryHandler : IRequestHandler<ListLancamentosQuery, Result<ListaLancamentosResponse>>
 {
     private readonly ILancamentoRepository _lancamentoRepository;
     private readonly ICategoriaRepository _categoriaRepository;
@@ -24,7 +24,7 @@ public class ListLancamentosQueryHandler : IRequestHandler<ListLancamentosQuery,
         _cartaoRepository = cartaoRepository;
     }
 
-    public async Task<Result<(List<LancamentoDto>, int)>> Handle(ListLancamentosQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ListaLancamentosResponse>> Handle(ListLancamentosQuery request, CancellationToken cancellationToken)
     {
         // Get lancamentos
         var lancamentos = await _lancamentoRepository.ListAsync(
@@ -105,6 +105,6 @@ public class ListLancamentosQueryHandler : IRequestHandler<ListLancamentosQuery,
             dtos.Add(dto);
         }
 
-        return Result.Success((dtos, total));
+        return Result.Success(new ListaLancamentosResponse(dtos, total, request.Skip, request.Take));
     }
 }

@@ -27,7 +27,7 @@ public class LancamentosController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<(List<LancamentoDto>, int)>> List(
+    public async Task<ActionResult<ListaLancamentosResponse>> List(
         [FromQuery] DateOnly? dataInicio,
         [FromQuery] DateOnly? dataFim,
         [FromQuery] Guid? contaId,

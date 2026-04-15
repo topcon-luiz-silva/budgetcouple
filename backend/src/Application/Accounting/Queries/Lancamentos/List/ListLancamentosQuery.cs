@@ -14,4 +14,4 @@ public record ListLancamentosQuery(
     string? Tipo = null,
     string? NaturezaLancamento = null,
     int Skip = 0,
-    int Take = 50) : IRequest<Result<(List<LancamentoDto> lancamentos, int total)>>;
+    int Take = 50) : IRequest<Result<ListaLancamentosResponse>>;
