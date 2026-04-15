@@ -91,7 +91,7 @@ export function ContaFormPage() {
     errorMessage = 'Erro ao processar conta'
   }
 
-  if (isLoadingConta) {
+  if (isEditing && isLoadingConta) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p className="text-slate-600">{t('common.loading')}</p>

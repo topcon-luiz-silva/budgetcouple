@@ -104,7 +104,7 @@ export function LancamentoSimplesFormPage() {
     errorMessage = 'Erro ao processar lançamento'
   }
 
-  if (isLoadingLancamento) {
+  if (isEditing && isLoadingLancamento) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p className="text-slate-600">{t('common.loading')}</p>

@@ -85,7 +85,7 @@ export function CategoriaFormPage() {
     errorMessage = 'Erro ao processar categoria'
   }
 
-  if (isLoadingCategoria) {
+  if (isEditing && isLoadingCategoria) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p className="text-slate-600">{t('common.loading')}</p>

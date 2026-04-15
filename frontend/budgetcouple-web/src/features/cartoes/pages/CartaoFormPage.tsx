@@ -93,7 +93,7 @@ export function CartaoFormPage() {
     errorMessage = 'Erro ao processar cartão'
   }
 
-  if (isLoadingCartao) {
+  if (isEditing && isLoadingCartao) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p className="text-slate-600">{t('common.loading')}</p>
