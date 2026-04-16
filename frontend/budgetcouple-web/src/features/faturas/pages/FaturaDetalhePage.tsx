@@ -112,13 +112,13 @@ export function FaturaDetalhePage() {
           <div>
             <p className="text-sm text-slate-600">{t('faturas.closingDate')}</p>
             <p className="text-lg font-semibold text-slate-900">
-              {format(new Date(fatura.dataFechamento), 'dd/MM/yyyy')}
+              {format(new Date(fatura.dataFechamento + 'T00:00:00'), 'dd/MM/yyyy')}
             </p>
           </div>
           <div>
             <p className="text-sm text-slate-600">{t('faturas.dueDate')}</p>
             <p className="text-lg font-semibold text-slate-900">
-              {format(new Date(fatura.dataVencimento), 'dd/MM/yyyy')}
+              {format(new Date(fatura.dataVencimento + 'T00:00:00'), 'dd/MM/yyyy')}
             </p>
           </div>
         </div>
@@ -137,7 +137,7 @@ export function FaturaDetalhePage() {
                   <span className="text-green-600">Paga</span>
                   {fatura.dataPagamento && (
                     <p className="text-sm text-slate-600 mt-1">
-                      em {format(new Date(fatura.dataPagamento), 'dd/MM/yyyy')}
+                      em {format(new Date(fatura.dataPagamento + 'T00:00:00'), 'dd/MM/yyyy')}
                     </p>
                   )}
                 </>

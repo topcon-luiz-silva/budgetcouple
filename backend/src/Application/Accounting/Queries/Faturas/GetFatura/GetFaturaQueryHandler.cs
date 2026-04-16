@@ -59,7 +59,7 @@ public class GetFaturaQueryHandler : IRequestHandler<GetFaturaQuery, Result<Fatu
             CartaoId: cartao.Id,
             CartaoNome: cartao.Nome,
             Competencia: request.Competencia,
-            DataFechamento: cartao.DiaFechamento,
+            DataFechamento: fatura.DataFechamento.ToString("yyyy-MM-dd"),
             DataVencimento: fatura.DataVencimento.ToString("yyyy-MM-dd"),
             ValorTotal: fatura.Total,
             Paga: todosPagos,

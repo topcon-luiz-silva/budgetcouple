@@ -96,7 +96,7 @@ export function FaturasListPage() {
                         {formatarCompetencia(fatura.competencia)}
                       </h3>
                       <p className="text-sm text-slate-600 mt-1">
-                        Vencimento: {format(new Date(fatura.dataVencimento), 'dd/MM/yyyy')}
+                        Vencimento: {format(new Date(fatura.dataVencimento + 'T00:00:00'), 'dd/MM/yyyy')}
                       </p>
                     </div>
                     <Badge className={fatura.paga ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>

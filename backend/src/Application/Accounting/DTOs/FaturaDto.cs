@@ -4,7 +4,7 @@ public record FaturaDto(
     Guid CartaoId,
     string CartaoNome,
     string Competencia, // YYYY-MM
-    int DataFechamento,
+    string DataFechamento, // YYYY-MM-DD
     string DataVencimento, // YYYY-MM-DD
     decimal ValorTotal,
     bool Paga,

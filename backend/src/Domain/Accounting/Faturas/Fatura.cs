@@ -17,6 +17,7 @@ public class Fatura
     public DateOnly Competencia { get; } // First day of the invoice month
     public List<Lancamento> Lancamentos { get; }
     public decimal Total => Lancamentos.Sum(l => l.Valor);
+    public DateOnly DataFechamento { get; }
     public DateOnly DataVencimento { get; }
     public FaturaStatus Status { get; private set; }
 
@@ -25,6 +26,10 @@ public class Fatura
         Cartao = cartao;
         Competencia = competencia;
         Lancamentos = lancamentos.ToList();
+
+        // Data de fechamento: DiaFechamento no mesmo mês da competência.
+        int diaFech = Math.Min(Cartao.DiaFechamento, DateTime.DaysInMonth(Competencia.Year, Competencia.Month));
+        DataFechamento = new DateOnly(Competencia.Year, Competencia.Month, diaFech);
 
         // Calculate due date: DiaVencimento do MESMO mês da competência.
         // Se DiaVencimento < DiaFechamento (vencimento antes do fechamento), avança 1 mês.
