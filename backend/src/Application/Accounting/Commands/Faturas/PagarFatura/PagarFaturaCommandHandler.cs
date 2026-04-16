@@ -1,6 +1,7 @@
 using BudgetCouple.Application.Accounting.DTOs;
 using BudgetCouple.Application.Common.Interfaces.Accounting;
 using BudgetCouple.Domain.Accounting;
+using BudgetCouple.Domain.Accounting.Faturas;
 using BudgetCouple.Domain.Accounting.Lancamentos;
 using BudgetCouple.Domain.Common;
 using MediatR;
@@ -13,20 +14,17 @@ public class PagarFaturaCommandHandler : IRequestHandler<PagarFaturaCommand, Res
     private readonly ILancamentoRepository _lancamentoRepository;
     private readonly ICategoriaRepository _categoriaRepository;
     private readonly IContaRepository _contaRepository;
-    private readonly IMediator _mediator;
 
     public PagarFaturaCommandHandler(
         ICartaoRepository cartaoRepository,
         ILancamentoRepository lancamentoRepository,
         ICategoriaRepository categoriaRepository,
-        IContaRepository contaRepository,
-        IMediator mediator)
+        IContaRepository contaRepository)
     {
         _cartaoRepository = cartaoRepository;
         _lancamentoRepository = lancamentoRepository;
         _categoriaRepository = categoriaRepository;
         _contaRepository = contaRepository;
-        _mediator = mediator;
     }
 
     public async Task<Result<FaturaDto>> Handle(PagarFaturaCommand request, CancellationToken cancellationToken)
@@ -118,9 +116,29 @@ public class PagarFaturaCommandHandler : IRequestHandler<PagarFaturaCommand, Res
         conta.AtualizarSaldo(-valorTotal);
         _contaRepository.Update(conta);
 
-        // Build and return updated fatura DTO
-        var getQuery = new Queries.Faturas.GetFatura.GetFaturaQuery(request.CartaoId, request.Competencia);
-        return await _mediator.Send(getQuery, cancellationToken);
+        // Build fatura DTO inline (avoid nested MediatR which creates nested transactions)
+        var fatura = new Fatura(cartao, new DateOnly(ano, mes, 1), lancamentosCompetencia);
+
+        var lancamentoDtos = lancamentosCompetencia.Select(l => LancamentoDto.FromDomain(l)).ToList();
+
+        var todosPagos = lancamentosCompetencia.All(l => l.FaturaPaga);
+        var dataPagamentoStr = todosPagos
+            ? lancamentosCompetencia.First(l => l.FaturaPaga).FaturaPagaEm?.ToString("yyyy-MM-dd")
+            : null;
+
+        var dto = new FaturaDto(
+            CartaoId: cartao.Id,
+            CartaoNome: cartao.Nome,
+            Competencia: request.Competencia,
+            DataFechamento: fatura.DataFechamento.ToString("yyyy-MM-dd"),
+            DataVencimento: fatura.DataVencimento.ToString("yyyy-MM-dd"),
+            ValorTotal: fatura.Total,
+            Paga: todosPagos,
+            DataPagamento: dataPagamentoStr,
+            Lancamentos: lancamentoDtos
+        );
+
+        return Result.Success(dto);
     }
 
     private static bool TryParseCompetencia(string competencia, out int ano, out int mes)
