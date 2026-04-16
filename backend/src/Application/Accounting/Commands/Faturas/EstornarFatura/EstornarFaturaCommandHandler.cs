@@ -84,7 +84,7 @@ public class EstornarFaturaCommandHandler : IRequestHandler<EstornarFaturaComman
             }
 
             // Delete the payment lancamento
-            _lancamentoRepository.Remove(lancamentoPagamento);
+            _lancamentoRepository.Delete(lancamentoPagamento);
         }
 
         // Unmark all invoice lancamentos as paid
