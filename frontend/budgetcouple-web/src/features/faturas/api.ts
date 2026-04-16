@@ -19,4 +19,11 @@ export const faturasApi = {
     )
     return data
   },
+
+  estornarFatura: async (cartaoId: string, competencia: string): Promise<Fatura> => {
+    const { data } = await api.post<Fatura>(
+      `/cartoes/${cartaoId}/faturas/${competencia}/estornar`
+    )
+    return data
+  },
 }

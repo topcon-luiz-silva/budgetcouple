@@ -1,5 +1,6 @@
 namespace BudgetCouple.Api.Controllers;
 
+using BudgetCouple.Application.Accounting.Commands.Faturas.EstornarFatura;
 using BudgetCouple.Application.Accounting.Commands.Faturas.PagarFatura;
 using BudgetCouple.Application.Accounting.DTOs;
 using BudgetCouple.Application.Accounting.Queries.Faturas.GetFatura;
@@ -63,6 +64,21 @@ public class FaturasController : ControllerBase
             dataPagamento,
             request.ContaDebitoId);
 
+        var result = await _mediator.Send(command);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : StatusCode(MapErrorToStatusCode(result.Error), new { error = result.Error.Message });
+    }
+
+    /// <summary>
+    /// Reverse (estornar) a paid invoice.
+    /// </summary>
+    [HttpPost("{competencia}/estornar")]
+    public async Task<ActionResult<FaturaDto>> EstornarFatura(
+        Guid cartaoId,
+        string competencia)
+    {
+        var command = new EstornarFaturaCommand(cartaoId, competencia);
         var result = await _mediator.Send(command);
         return result.IsSuccess
             ? Ok(result.Value)

@@ -280,6 +280,16 @@ public class Lancamento : AggregateRoot
     }
 
     /// <summary>
+    /// Reverts credit card invoice payment mark.
+    /// </summary>
+    public void DesmarcarFaturaPaga()
+    {
+        FaturaPaga = false;
+        FaturaPagaEm = null;
+        AtualizadoEm = DateTime.UtcNow;
+    }
+
+    /// <summary>
     /// Marks transaction as overdue.
     /// </summary>
     public void MarcarComoAtrasado(DateOnly hoje)

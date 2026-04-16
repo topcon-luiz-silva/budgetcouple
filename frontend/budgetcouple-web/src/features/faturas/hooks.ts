@@ -34,3 +34,18 @@ export function usePagarFatura(cartaoId: string) {
     },
   })
 }
+
+export function useEstornarFatura(cartaoId: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ competencia }: { competencia: string }) =>
+      faturasApi.estornarFatura(cartaoId, competencia),
+    onSuccess: (fatura) => {
+      queryClient.invalidateQueries({ queryKey: [FATURAS_QUERY_KEY, 'list', cartaoId] })
+      queryClient.invalidateQueries({
+        queryKey: [FATURAS_QUERY_KEY, 'detail', cartaoId, fatura.competencia],
+      })
+    },
+  })
+}

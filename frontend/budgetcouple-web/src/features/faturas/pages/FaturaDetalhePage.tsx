@@ -7,7 +7,8 @@ import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { useFatura, usePagarFatura } from '../hooks'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogBody } from '@/components/ui/dialog'
+import { useFatura, usePagarFatura, useEstornarFatura } from '../hooks'
 import { PagarFaturaDialog } from '../components/PagarFaturaDialog'
 import { AxiosError } from 'axios'
 import type { PayFaturaData } from '../types'
@@ -27,7 +28,9 @@ export function FaturaDetalhePage() {
   const { t } = useTranslation()
   const { cartaoId, competencia } = useParams<{ cartaoId: string; competencia: string }>()
   const [pagarDialogOpen, setPagarDialogOpen] = useState(false)
+  const [estornarDialogOpen, setEstornarDialogOpen] = useState(false)
   const [pagarError, setPagarError] = useState<string | null>(null)
+  const [estornarError, setEstornarError] = useState<string | null>(null)
 
   if (!cartaoId || !competencia) {
     return (
@@ -39,6 +42,7 @@ export function FaturaDetalhePage() {
 
   const { data: fatura, isPending: isLoading, error } = useFatura(cartaoId, competencia)
   const { mutate: pagarFatura, isPending: isPagarPending, error: pagarMutationError } = usePagarFatura(cartaoId)
+  const { mutate: estornarFatura, isPending: isEstornarPending } = useEstornarFatura(cartaoId)
 
   let errorMessage: string | null = null
   if (error instanceof AxiosError) {
@@ -58,6 +62,25 @@ export function FaturaDetalhePage() {
         onError: (err) => {
           if (err instanceof AxiosError) {
             setPagarError(err.response?.data?.error || 'Erro ao pagar fatura')
+          }
+        },
+      }
+    )
+  }
+
+  const handleEstornar = () => {
+    estornarFatura(
+      { competencia },
+      {
+        onSuccess: () => {
+          setEstornarDialogOpen(false)
+          setEstornarError(null)
+        },
+        onError: (err) => {
+          if (err instanceof AxiosError) {
+            setEstornarError(err.response?.data?.error || 'Erro ao estornar fatura')
+          } else {
+            setEstornarError('Erro ao estornar fatura')
           }
         },
       }
@@ -151,12 +174,17 @@ export function FaturaDetalhePage() {
         </div>
       </div>
 
-      {/* Pay Button */}
-      {!fatura.paga && (
-        <div className="flex justify-end">
+      {/* Action Buttons */}
+      <div className="flex justify-end gap-3">
+        {!fatura.paga && (
           <Button onClick={() => setPagarDialogOpen(true)}>{t('faturas.pay')}</Button>
-        </div>
-      )}
+        )}
+        {fatura.paga && (
+          <Button variant="outline" onClick={() => setEstornarDialogOpen(true)}>
+            Estornar Pagamento
+          </Button>
+        )}
+      </div>
 
       {/* Lançamentos */}
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
@@ -206,6 +234,48 @@ export function FaturaDetalhePage() {
         isPending={isPagarPending}
         error={pagarError ? new Error(pagarError) : pagarMutationError}
       />
+
+      <Dialog open={estornarDialogOpen} onOpenChange={setEstornarDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Estornar Pagamento</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            {estornarError && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertTitle>Erro</AlertTitle>
+                <AlertDescription>{estornarError}</AlertDescription>
+              </Alert>
+            )}
+            <p className="text-slate-700">
+              Tem certeza que deseja estornar o pagamento da fatura de{' '}
+              <strong>{formatarCompetencia(fatura.competencia)}</strong> no valor de{' '}
+              <strong>{currencyFormatter.format(fatura.valorTotal)}</strong>?
+            </p>
+            <p className="text-sm text-slate-500 mt-2">
+              O valor será devolvido à conta de débito e a fatura voltará ao status &quot;Aberta&quot;.
+            </p>
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => { setEstornarDialogOpen(false); setEstornarError(null) }}
+              disabled={isEstornarPending}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleEstornar}
+              disabled={isEstornarPending}
+            >
+              {isEstornarPending ? 'Processando...' : 'Confirmar Estorno'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
