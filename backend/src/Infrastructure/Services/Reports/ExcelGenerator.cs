@@ -73,11 +73,11 @@ public class ExcelGenerator : IExcelGenerator
             resumoSheet.Cell("B1").Value = dashboard.Competencia;
 
             resumoSheet.Cell("A2").Value = "Total Receitas";
-            resumoSheet.Cell("B2").Value = dashboard.Resumo.TotalReceitas;
+            resumoSheet.Cell("B2").Value = dashboard.Resumo.Receitas;
             resumoSheet.Cell("B2").Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
 
             resumoSheet.Cell("A3").Value = "Total Despesas";
-            resumoSheet.Cell("B3").Value = dashboard.Resumo.TotalDespesas;
+            resumoSheet.Cell("B3").Value = dashboard.Resumo.Despesas;
             resumoSheet.Cell("B3").Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
 
             resumoSheet.Cell("A4").Value = "Saldo";
@@ -85,15 +85,15 @@ public class ExcelGenerator : IExcelGenerator
             resumoSheet.Cell("B4").Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
 
             resumoSheet.Cell("A5").Value = "Total Previsto Receitas";
-            resumoSheet.Cell("B5").Value = dashboard.Resumo.TotalPrevistoReceitas;
+            resumoSheet.Cell("B5").Value = dashboard.Resumo.ReceitasPrevisto;
             resumoSheet.Cell("B5").Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
 
             resumoSheet.Cell("A6").Value = "Total Previsto Despesas";
-            resumoSheet.Cell("B6").Value = dashboard.Resumo.TotalPrevistoDespesas;
+            resumoSheet.Cell("B6").Value = dashboard.Resumo.DespesasPrevisto;
             resumoSheet.Cell("B6").Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
 
             resumoSheet.Cell("A7").Value = "Saldo Consolidado Contas";
-            resumoSheet.Cell("B7").Value = dashboard.Resumo.SaldoConsolidadoContas;
+            resumoSheet.Cell("B7").Value = dashboard.Resumo.SaldoConsolidado;
             resumoSheet.Cell("B7").Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
 
             // Por Categoria
@@ -149,7 +149,7 @@ public class ExcelGenerator : IExcelGenerator
         foreach (var cat in categorias)
         {
             worksheet.Cell(rowNum, 1).Value = cat.CategoriaNome;
-            worksheet.Cell(rowNum, 2).Value = cat.TotalDespesas;
+            worksheet.Cell(rowNum, 2).Value = cat.Total;
             worksheet.Cell(rowNum, 3).Value = cat.TotalReceitas;
             worksheet.Cell(rowNum, 4).Value = cat.Percentual;
 
@@ -179,9 +179,9 @@ public class ExcelGenerator : IExcelGenerator
         foreach (var conta in contas)
         {
             worksheet.Cell(rowNum, 1).Value = conta.ContaNome;
-            worksheet.Cell(rowNum, 2).Value = conta.Saldo;
-            worksheet.Cell(rowNum, 3).Value = conta.TotalEntradas;
-            worksheet.Cell(rowNum, 4).Value = conta.TotalSaidas;
+            worksheet.Cell(rowNum, 2).Value = conta.SaldoAtual;
+            worksheet.Cell(rowNum, 3).Value = conta.Entradas;
+            worksheet.Cell(rowNum, 4).Value = conta.Saidas;
 
             worksheet.Cell(rowNum, 2).Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
             worksheet.Cell(rowNum, 3).Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
@@ -209,9 +209,9 @@ public class ExcelGenerator : IExcelGenerator
         foreach (var cartao in cartoes)
         {
             worksheet.Cell(rowNum, 1).Value = cartao.CartaoNome;
-            worksheet.Cell(rowNum, 2).Value = cartao.ValorFatura;
+            worksheet.Cell(rowNum, 2).Value = cartao.FaturaBruta;
             worksheet.Cell(rowNum, 3).Value = cartao.Limite;
-            worksheet.Cell(rowNum, 4).Value = cartao.LimiteUtilizadoPct;
+            worksheet.Cell(rowNum, 4).Value = cartao.Utilizado;
 
             worksheet.Cell(rowNum, 2).Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
             worksheet.Cell(rowNum, 3).Style.NumberFormat.Format = "_-[$R$-pt-BR] * #,##0.00_-;-[$R$-pt-BR] * #,##0.00_-;_-[$R$-pt-BR] * \"-\"??_-;_-@_-";
@@ -238,7 +238,7 @@ public class ExcelGenerator : IExcelGenerator
         int rowNum = 2;
         foreach (var mes in evolucao)
         {
-            worksheet.Cell(rowNum, 1).Value = mes.Competencia;
+            worksheet.Cell(rowNum, 1).Value = mes.Mes;
             worksheet.Cell(rowNum, 2).Value = mes.Receitas;
             worksheet.Cell(rowNum, 3).Value = mes.Despesas;
             worksheet.Cell(rowNum, 4).Value = mes.Saldo;

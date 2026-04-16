@@ -108,12 +108,12 @@ public class PdfGenerator : IPdfGenerator
                             columns.RelativeColumn(1);
                         });
 
-                        AddResumoRow(table, "Total Receitas", dashboard.Resumo.TotalReceitas);
-                        AddResumoRow(table, "Total Despesas", dashboard.Resumo.TotalDespesas);
+                        AddResumoRow(table, "Total Receitas", dashboard.Resumo.Receitas);
+                        AddResumoRow(table, "Total Despesas", dashboard.Resumo.Despesas);
                         AddResumoRow(table, "Saldo", dashboard.Resumo.Saldo);
-                        AddResumoRow(table, "Total Previsto Receitas", dashboard.Resumo.TotalPrevistoReceitas);
-                        AddResumoRow(table, "Total Previsto Despesas", dashboard.Resumo.TotalPrevistoDespesas);
-                        AddResumoRow(table, "Saldo Consolidado Contas", dashboard.Resumo.SaldoConsolidadoContas);
+                        AddResumoRow(table, "Total Previsto Receitas", dashboard.Resumo.ReceitasPrevisto);
+                        AddResumoRow(table, "Total Previsto Despesas", dashboard.Resumo.DespesasPrevisto);
+                        AddResumoRow(table, "Saldo Consolidado Contas", dashboard.Resumo.SaldoConsolidado);
                     });
 
                     // Por Categoria
@@ -139,7 +139,7 @@ public class PdfGenerator : IPdfGenerator
                             foreach (var cat in dashboard.PorCategoria.Take(10))
                             {
                                 table.Cell().Text(cat.CategoriaNome);
-                                table.Cell().Text($"R$ {cat.TotalDespesas:N2}");
+                                table.Cell().Text($"R$ {cat.Total:N2}");
                                 table.Cell().Text($"{cat.Percentual:N1}%");
                             }
                         });
@@ -166,7 +166,7 @@ public class PdfGenerator : IPdfGenerator
                             foreach (var conta in dashboard.PorConta)
                             {
                                 table.Cell().Text(conta.ContaNome);
-                                table.Cell().Text($"R$ {conta.Saldo:N2}");
+                                table.Cell().Text($"R$ {conta.SaldoAtual:N2}");
                             }
                         });
                     }

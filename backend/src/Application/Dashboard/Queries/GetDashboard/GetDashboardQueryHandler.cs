@@ -121,12 +121,15 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             saldoConsolidadoContas += conta.SaldoInicial + entradas - saidas;
         }
 
+        var saldoPrevisto = totalReceitasPrevistas - totalDespesasPrevistas;
+
         var resumo = new ResumoDto(
             totalReceitasRealizadas,
             totalDespesasRealizadas,
             saldo,
             totalReceitasPrevistas,
             totalDespesasPrevistas,
+            saldoPrevisto,
             saldoConsolidadoContas);
 
         // Calculate PorCategoria (TOP despesas) — exclui pagamento de fatura (não é despesa nova)
@@ -147,7 +150,7 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
                     totalReceitas,
                     percentual);
             })
-            .OrderByDescending(x => x.TotalDespesas)
+            .OrderByDescending(x => x.Total)
             .ToList();
 
         // Calculate PorConta
@@ -156,16 +159,16 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             .Select(c =>
             {
                 var lancamentosConta = lancamentosRealizados.Where(l => l.ContaId == c.Id).ToList();
-                var totalEntradas = lancamentosConta.Where(l => l.Tipo == TipoLancamento.RECEITA).Sum(l => l.Valor);
-                var totalSaidas = lancamentosConta.Where(l => l.Tipo == TipoLancamento.DESPESA).Sum(l => l.Valor);
-                var saldoConta = c.SaldoInicial + totalEntradas - totalSaidas;
+                var entradas = lancamentosConta.Where(l => l.Tipo == TipoLancamento.RECEITA).Sum(l => l.Valor);
+                var saidas = lancamentosConta.Where(l => l.Tipo == TipoLancamento.DESPESA).Sum(l => l.Valor);
+                var saldoAtual = c.SaldoInicial + entradas - saidas;
 
                 return new ContaResumoDto(
                     c.Id,
                     c.Nome,
-                    saldoConta,
-                    totalEntradas,
-                    totalSaidas);
+                    saldoAtual,
+                    entradas,
+                    saidas);
             })
             .ToList();
 
@@ -175,19 +178,32 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             .Select(c =>
             {
                 var lancamentosCartao = lancamentosRealizados.Where(l => l.CartaoId == c.Id).ToList();
-                var valorFatura = lancamentosCartao.Where(l => l.Tipo == TipoLancamento.DESPESA).Sum(l => l.Valor);
-                var limiteUtilizadoPct = c.Limite > 0 ? (valorFatura / c.Limite) * 100 : 0;
+                var faturaBruta = lancamentosCartao.Where(l => l.Tipo == TipoLancamento.DESPESA).Sum(l => l.Valor);
+                var utilizado = c.Limite > 0 ? (faturaBruta / c.Limite) * 100 : 0;
 
                 return new CartaoResumoDto(
                     c.Id,
                     c.Nome,
-                    valorFatura,
+                    faturaBruta,
                     c.Limite,
-                    limiteUtilizadoPct);
+                    utilizado);
             })
             .ToList();
 
         // Calculate EvolucaoMensal (últimos 6 meses)
+        // Busca lançamentos dos últimos 6 meses para preencher o gráfico de evolução
+        var inicioEvolucao = primeiroDiaMes.AddMonths(-5);
+        var lancamentosEvolucao = await _lancamentoRepository.ListAsync(
+            inicioEvolucao,
+            ultimoDiaMes,
+            null, null, null, null, null, null,
+            0, int.MaxValue,
+            cancellationToken);
+
+        lancamentosEvolucao = lancamentosEvolucao
+            .Where(l => !l.Tags.Contains("__TRANSFERENCIA__"))
+            .ToList();
+
         var evolucaoMensal = new List<EvolucaoMesDto>();
         for (int i = 5; i >= 0; i--)
         {
@@ -195,7 +211,7 @@ public class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Resul
             var inicio = new DateOnly(mesData.Year, mesData.Month, 1);
             var fim = inicio.AddMonths(1).AddDays(-1);
 
-            var lancamentosMes = lancamentos
+            var lancamentosMes = lancamentosEvolucao
                 .Where(l => l.Data >= inicio && l.Data <= fim
                          && l.Natureza == NaturezaLancamento.REALIZADA
                          && !l.Tags.Contains("__PAGAMENTO_FATURA__"))

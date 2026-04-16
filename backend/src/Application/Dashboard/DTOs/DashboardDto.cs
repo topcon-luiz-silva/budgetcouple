@@ -11,37 +11,38 @@ public record DashboardDto(
     List<VencimentoProximoDto> ProximosVencimentos);
 
 public record ResumoDto(
-    decimal TotalReceitas,
-    decimal TotalDespesas,
+    decimal Receitas,
+    decimal Despesas,
     decimal Saldo,
-    decimal TotalPrevistoReceitas,
-    decimal TotalPrevistoDespesas,
-    decimal SaldoConsolidadoContas);
+    decimal ReceitasPrevisto,
+    decimal DespesasPrevisto,
+    decimal SaldoPrevisto,
+    decimal SaldoConsolidado);
 
 public record CategoriaResumoDto(
     Guid CategoriaId,
     string CategoriaNome,
     string CorHex,
-    decimal TotalDespesas,
+    decimal Total,
     decimal TotalReceitas,
     decimal Percentual);
 
 public record ContaResumoDto(
     Guid ContaId,
     string ContaNome,
-    decimal Saldo,
-    decimal TotalEntradas,
-    decimal TotalSaidas);
+    decimal SaldoAtual,
+    decimal Entradas,
+    decimal Saidas);
 
 public record CartaoResumoDto(
     Guid CartaoId,
     string CartaoNome,
-    decimal ValorFatura,
+    decimal FaturaBruta,
     decimal Limite,
-    decimal LimiteUtilizadoPct);
+    decimal Utilizado);
 
 public record EvolucaoMesDto(
-    string Competencia,
+    string Mes,
     decimal Receitas,
     decimal Despesas,
     decimal Saldo);
