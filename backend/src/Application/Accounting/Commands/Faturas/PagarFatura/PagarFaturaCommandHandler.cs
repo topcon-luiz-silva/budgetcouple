@@ -1,4 +1,5 @@
 using BudgetCouple.Application.Accounting.DTOs;
+using BudgetCouple.Application.Common.Interfaces;
 using BudgetCouple.Application.Common.Interfaces.Accounting;
 using BudgetCouple.Domain.Accounting;
 using BudgetCouple.Domain.Accounting.Faturas;
@@ -14,17 +15,20 @@ public class PagarFaturaCommandHandler : IRequestHandler<PagarFaturaCommand, Res
     private readonly ILancamentoRepository _lancamentoRepository;
     private readonly ICategoriaRepository _categoriaRepository;
     private readonly IContaRepository _contaRepository;
+    private readonly IApplicationDbContext _dbContext;
 
     public PagarFaturaCommandHandler(
         ICartaoRepository cartaoRepository,
         ILancamentoRepository lancamentoRepository,
         ICategoriaRepository categoriaRepository,
-        IContaRepository contaRepository)
+        IContaRepository contaRepository,
+        IApplicationDbContext dbContext)
     {
         _cartaoRepository = cartaoRepository;
         _lancamentoRepository = lancamentoRepository;
         _categoriaRepository = categoriaRepository;
         _contaRepository = contaRepository;
+        _dbContext = dbContext;
     }
 
     public async Task<Result<FaturaDto>> Handle(PagarFaturaCommand request, CancellationToken cancellationToken)
@@ -115,6 +119,9 @@ public class PagarFaturaCommandHandler : IRequestHandler<PagarFaturaCommand, Res
         // Update conta balance (deduct payment)
         conta.AtualizarSaldo(-valorTotal);
         _contaRepository.Update(conta);
+
+        // Persist all changes to database
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         // Build fatura DTO inline (avoid nested MediatR which creates nested transactions)
         var fatura = new Fatura(cartao, new DateOnly(ano, mes, 1), lancamentosCompetencia);
