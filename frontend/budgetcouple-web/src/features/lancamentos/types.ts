@@ -97,16 +97,16 @@ export const lancamentoSimplesFormSchema = z
     dataCompetencia: z.string(),
     dataVencimento: z.string().optional(),
     naturezaLancamento: z.enum(['DESPESA', 'RECEITA', 'TRANSFERENCIA']),
-    contaId: z.string().uuid().optional(),
-    cartaoId: z.string().uuid().optional(),
+    contaId: z.string().uuid().optional().or(z.literal('')),
+    cartaoId: z.string().uuid().optional().or(z.literal('')),
     categoriaId: z.string().uuid(),
-    subcategoriaId: z.string().uuid().optional(),
+    subcategoriaId: z.string().uuid().optional().or(z.literal('')),
     tags: z.array(z.string()).max(10),
     observacoes: z.string().max(500).optional(),
     statusPagamento: z.enum(['PREVISTO', 'REALIZADO']),
     dataPagamento: z.string().optional(),
   })
-  .refine((data) => data.contaId || data.cartaoId, {
+  .refine((data) => (data.contaId && data.contaId !== '') || (data.cartaoId && data.cartaoId !== ''), {
     message: 'Você deve selecionar uma conta ou um cartão',
     path: ['contaId'],
   })
@@ -131,14 +131,14 @@ export const lancamentoParceladoFormSchema = z.object({
   totalParcelas: z.coerce.number().int().min(2, 'Mínimo 2 parcelas').max(99, 'Máximo 99 parcelas'),
   dataPrimeiraParcela: z.string(),
   naturezaLancamento: z.enum(['DESPESA', 'RECEITA', 'TRANSFERENCIA']),
-  contaId: z.string().uuid().optional(),
-  cartaoId: z.string().uuid().optional(),
+  contaId: z.string().uuid().optional().or(z.literal('')),
+  cartaoId: z.string().uuid().optional().or(z.literal('')),
   categoriaId: z.string().uuid(),
-  subcategoriaId: z.string().uuid().optional(),
+  subcategoriaId: z.string().uuid().optional().or(z.literal('')),
   tags: z.array(z.string()).max(10),
   observacoes: z.string().max(500).optional(),
 })
-  .refine((data) => data.contaId || data.cartaoId, {
+  .refine((data) => (data.contaId && data.contaId !== '') || (data.cartaoId && data.cartaoId !== ''), {
     message: 'Você deve selecionar uma conta ou um cartão',
     path: ['contaId'],
   })
@@ -152,15 +152,15 @@ export const lancamentoRecorrenteFormSchema = z.object({
   dataInicio: z.string(),
   dataFim: z.string().optional(),
   naturezaLancamento: z.enum(['DESPESA', 'RECEITA', 'TRANSFERENCIA']),
-  contaId: z.string().uuid().optional(),
-  cartaoId: z.string().uuid().optional(),
+  contaId: z.string().uuid().optional().or(z.literal('')),
+  cartaoId: z.string().uuid().optional().or(z.literal('')),
   categoriaId: z.string().uuid(),
-  subcategoriaId: z.string().uuid().optional(),
+  subcategoriaId: z.string().uuid().optional().or(z.literal('')),
   tags: z.array(z.string()).max(10),
   observacoes: z.string().max(500).optional(),
   gerarOcorrenciasAte: z.string().optional(),
 })
-  .refine((data) => data.contaId || data.cartaoId, {
+  .refine((data) => (data.contaId && data.contaId !== '') || (data.cartaoId && data.cartaoId !== ''), {
     message: 'Você deve selecionar uma conta ou um cartão',
     path: ['contaId'],
   })

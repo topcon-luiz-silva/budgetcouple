@@ -86,12 +86,22 @@ export function LancamentoSimplesFormPage() {
   }, [lancamento, isEditing, reset])
 
   const onSubmit = (data: LancamentoSimplesFormData) => {
+    // Clean empty strings to undefined so backend doesn't receive invalid GUIDs
+    const cleaned = {
+      ...data,
+      contaId: data.contaId || undefined,
+      cartaoId: data.cartaoId || undefined,
+      subcategoriaId: data.subcategoriaId || undefined,
+      observacoes: data.observacoes || undefined,
+      dataVencimento: data.dataVencimento || undefined,
+      dataPagamento: data.dataPagamento || undefined,
+    }
     if (isEditing) {
-      updateLancamento(data, {
+      updateLancamento(cleaned, {
         onSuccess: () => navigate('/lancamentos'),
       })
     } else {
-      createLancamento(data, {
+      createLancamento(cleaned, {
         onSuccess: () => navigate('/lancamentos'),
       })
     }

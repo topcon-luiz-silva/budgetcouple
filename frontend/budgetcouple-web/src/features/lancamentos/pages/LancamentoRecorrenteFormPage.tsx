@@ -58,7 +58,17 @@ export function LancamentoRecorrenteFormPage() {
   })
 
   const onSubmit = (data: any) => {
-    createRecorrencia(data, {
+    // Clean empty strings to undefined so backend doesn't receive invalid GUIDs
+    const cleaned = {
+      ...data,
+      contaId: data.contaId || undefined,
+      cartaoId: data.cartaoId || undefined,
+      subcategoriaId: data.subcategoriaId || undefined,
+      dataFim: data.dataFim || undefined,
+      gerarOcorrenciasAte: data.gerarOcorrenciasAte || undefined,
+      observacoes: data.observacoes || undefined,
+    }
+    createRecorrencia(cleaned, {
       onSuccess: () => navigate('/lancamentos'),
     })
   }

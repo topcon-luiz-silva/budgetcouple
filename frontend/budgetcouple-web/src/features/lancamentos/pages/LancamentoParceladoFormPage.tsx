@@ -47,7 +47,15 @@ export function LancamentoParceladoFormPage() {
   })
 
   const onSubmit = (data: any) => {
-    createLancamento(data, {
+    // Clean empty strings to undefined so backend doesn't receive invalid GUIDs
+    const cleaned = {
+      ...data,
+      contaId: data.contaId || undefined,
+      cartaoId: data.cartaoId || undefined,
+      subcategoriaId: data.subcategoriaId || undefined,
+      observacoes: data.observacoes || undefined,
+    }
+    createLancamento(cleaned, {
       onSuccess: () => navigate('/lancamentos'),
     })
   }
